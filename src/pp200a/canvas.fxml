@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.opus.fxsupport.FXFHeaderband?>
+<?import com.opus.fxsupport.FXFNavband?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox fx:id="canvas" alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1366.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pp200a.CanvasFXController">
+   <children>
+      <FXFHeaderband fx:id="headerband" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS" />
+      <AnchorPane prefHeight="720.0" prefWidth="1366.0">
+         <children>
+            <GridPane gridLinesVisible="true" hgap="10.0" layoutX="405.0" layoutY="156.0" prefHeight="470.0" prefWidth="920.0" vgap="10.0" AnchorPane.leftAnchor="200.0" AnchorPane.topAnchor="100.0">
+              <columnConstraints>
+                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="300.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="300.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="300.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="150.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="150.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="150.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Label alignment="CENTER" prefHeight="35.0" prefWidth="250.0" style="-fx-background-radius: 20; -fx-background-color: yellow; -fx-text-fill: red;" text="Label" />
+               </children>
+            </GridPane>
+         </children>
+      </AnchorPane>
+      <FXFNavband fx:id="navband" maxWidth="1.7976931348623157E308" />
+   </children>
+</VBox>

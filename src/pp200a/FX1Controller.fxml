@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.opus.fxsupport.DateWidget?>
+<?import com.opus.fxsupport.FXFTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import org.controlsfx.control.CheckListView?>
+
+<VBox prefHeight="800.0" prefWidth="812.0" stylesheets="@../../../../../FXSupport/src/com/opus/fxsupport/fxfsupport.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <StackPane alignment="CENTER_LEFT" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="100.0" styleClass="fxf-fx1banner">
+         <children>
+            <Label fx:id="lb_user" onMouseClicked="#user_action" StackPane.alignment="CENTER_RIGHT">
+               <StackPane.margin>
+                  <Insets right="50.0" />
+               </StackPane.margin>
+            </Label>
+            <Label fx:id="lb_profile" text="CP-32" textFill="WHITE" StackPane.alignment="CENTER_RIGHT">
+               <StackPane.margin>
+                  <Insets right="150.0" />
+               </StackPane.margin>
+               <font>
+                  <Font name="System Bold" size="42.0" />
+               </font>
+            </Label>
+            <Label text="ANALISE" textFill="WHITE" StackPane.alignment="CENTER_LEFT">
+               <font>
+                  <Font name="DejaVu Sans Bold" size="48.0" />
+               </font>
+               <StackPane.margin>
+                  <Insets left="30.0" />
+               </StackPane.margin>
+            </Label>
+         </children>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+         <VBox.margin>
+            <Insets />
+         </VBox.margin>
+         <padding>
+            <Insets left="20.0" />
+         </padding>
+      </StackPane>
+      <HBox prefHeight="612.0" prefWidth="381.0" VBox.vgrow="ALWAYS">
+         <children>
+            <VBox alignment="TOP_CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="200.0" styleClass="fxf-sidebar" HBox.hgrow="ALWAYS">
+               <children>
+                  <Label fx:id="sidebar_btcycle" alignment="BOTTOM_CENTER" contentDisplay="TOP" focusTraversable="false" graphicTextGap="0.0" onMouseClicked="#btcycle_action" styleClass="fxf-sidebarbt" text="Nova Analise" textAlignment="CENTER" />
+                  <Label fx:id="sidebar_btstore" alignment="BOTTOM_CENTER" contentDisplay="TOP" focusTraversable="false" graphicTextGap="0.0" layoutX="68.0" layoutY="11.0" onMouseClicked="#btstore_action" styleClass="fxf-sidebarbt" text="Armazenar Analise" textAlignment="CENTER" />
+                  <Label fx:id="sidebar_btreport" alignment="BOTTOM_CENTER" contentDisplay="TOP" focusTraversable="false" graphicTextGap="0.0" layoutX="68.0" layoutY="11.0" onMouseClicked="#btreport_action" styleClass="fxf-sidebarbt" text="Emitir Relatorio" textAlignment="CENTER" />
+                  <Label fx:id="sidebar_btbroadcast" alignment="BOTTOM_CENTER" contentDisplay="TOP" focusTraversable="false" graphicTextGap="0.0" layoutX="68.0" layoutY="11.0" onMouseClicked="#btexport_action" styleClass="fxf-sidebarbt" text="Exportar Resultado" textAlignment="CENTER" />
+                  <Label fx:id="sidebar_btloadfile" alignment="BOTTOM_CENTER" contentDisplay="TOP" focusTraversable="false" graphicTextGap="0.0" layoutX="48.0" layoutY="59.0" onMouseClicked="#btloadfile_action" styleClass="fxf-sidebarbt" text="Carregar de Arquivo" textAlignment="CENTER" />
+               </children>
+            </VBox>
+            <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#canvas_clicked" prefHeight="705.0" prefWidth="1105.0" style="-fx-background-color: white;" HBox.hgrow="ALWAYS">
+               <children>
+                  <Label layoutX="726.0" layoutY="111.0" text="Seg." />
+                  <FXFTextField id="02" fx:id="it_porosidade" focusPosition="1" layoutX="154.0" layoutY="53.0" prefHeight="28.0" prefWidth="123.0" promptText="entre o valor" styleClass="fxf-text-field" />
+                  <Label layoutX="46.0" layoutY="59.0" text="Porosidade :" />
+                  <FXFTextField id="01" fx:id="it_densidade" focusPosition="2" layoutX="154.0" layoutY="104.0" prefHeight="28.0" prefWidth="123.0" promptText="entre o valor" styleClass="fxf-text-field" />
+                  <Label layoutX="46.0" layoutY="110.0" text="Densidade :" />
+                  <FXFTextField id="02" fx:id="it_massa_calculada" alignment="CENTER" editable="false" layoutX="154.0" layoutY="156.0" prefHeight="28.0" prefWidth="125.0" promptText="calculando..." styleClass="fxf-label-field" text="0.0">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </FXFTextField>
+                  <FXFTextField id="02" fx:id="it_blaineresult" alignment="CENTER" editable="false" layoutX="468.0" layoutY="385.0" prefHeight="48.0" prefWidth="193.0" promptText="Resultado..." styleClass="fxf-label-field">
+                     <font>
+                        <Font name="System Bold" size="24.0" />
+                     </font>
+                  </FXFTextField>
+                  <ImageView fx:id="logoacp" fitHeight="93.0" fitWidth="276.0" layoutX="800.0" layoutY="450.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@acpcombr_chrome.png" />
+                     </image>
+                  </ImageView>
+                  <Label layoutX="671.0" layoutY="394.0" text="cm² / g">
+                     <font>
+                        <Font name="System Bold" size="24.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="46.0" layoutY="394.0" text="Superfície Específica (Blaine) :">
+                     <font>
+                        <Font name="System Bold" size="24.0" />
+                     </font>
+                  </Label>
+                  <FXFTextField id="01" fx:id="it_analisetime" focusPosition="7" layoutX="567.0" layoutY="53.0" prefHeight="28.0" prefWidth="123.0" promptText="em segundos..." styleClass="fxf-text-field" />
+                  <Label layoutX="430.0" layoutY="59.0" text="Tempo de analise :" />
+                  <Button fx:id="bt_timeplus" layoutX="726.0" layoutY="54.0" mnemonicParsing="false" onAction="#timeadd_action" styleClass="aux-button" text="+" />
+                  <Button fx:id="bt_timedrop" layoutX="746.0" layoutY="54.0" mnemonicParsing="false" onAction="#timedrop_action" styleClass="aux-button" text="V" />
+                  <Label layoutX="430.0" layoutY="110.0" text="Média :" />
+                  <FXFTextField id="01" fx:id="it_analiseaverage" alignment="CENTER" editable="false" layoutX="566.0" layoutY="104.0" prefHeight="30.0" prefWidth="125.0" promptText="segundos..." styleClass="fxf-label-field" text="0">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </FXFTextField>
+                  <Label layoutX="430.0" layoutY="163.0" text="R. S. D. :" />
+                  <FXFTextField id="01" fx:id="it_analisersd" alignment="CENTER" editable="false" layoutX="566.0" layoutY="157.0" prefHeight="30.0" prefWidth="123.0" promptText="segundos..." styleClass="fxf-label-field" text="0">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </FXFTextField>
+                  <Label layoutX="302.0" layoutY="110.0" text="g / cm³" />
+                  <Label layoutX="321.0" layoutY="162.0" text="g" />
+                  <Label layoutX="46.0" layoutY="162.0" text="Massa (calc) :" />
+                  <Label alignment="CENTER" layoutX="53.0" layoutY="14.0" prefHeight="16.0" prefWidth="300.0" styleClass="section-header" text="Calculo da massa do ensaio">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+                  <Label alignment="CENTER" layoutX="440.0" layoutY="14.0" prefHeight="16.0" prefWidth="300.0" styleClass="section-header" text="Tempos medidos no ensaio">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+                  <FXFTextField id="02" fx:id="it_sid" focusPosition="3" layoutX="154.0" layoutY="257.0" prefHeight="28.0" prefWidth="328.0" promptText="entre com a identificação da amostra" styleClass="fxf-text-field" />
+                  <Label layoutX="46.0" layoutY="263.0" text="Identificação :" />
+                  <Label alignment="CENTER" layoutX="407.0" layoutY="221.0" prefHeight="16.0" prefWidth="300.0" styleClass="section-header" text="Dados de identificação da Analise">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+                  <FXFTextField id="02" fx:id="it_notas" focusPosition="5" layoutX="154.0" layoutY="313.0" prefHeight="28.0" prefWidth="617.0" promptText="Digite aqui outros dados auxiliares" styleClass="fxf-text-field" />
+                  <Label layoutX="46.0" layoutY="319.0" text="Notas :" />
+                  <FXFTextField id="02" fx:id="it_lote" focusPosition="4" layoutX="571.0" layoutY="257.0" prefHeight="28.0" prefWidth="200.0" promptText="entre com o numero de lote" styleClass="fxf-text-field" />
+                  <Label layoutX="520.0" layoutY="263.0" text="Lote :" />
+                  <Label alignment="CENTER" layoutX="817.0" layoutY="14.0" prefHeight="16.0" prefWidth="300.0" styleClass="section-header" text="Calibração e Rastreamento">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="800.0" layoutY="103.0" text="Constante K :" />
+                  <FXFTextField id="01" fx:id="it_constantek" alignment="CENTER" editable="false" layoutX="949.0" layoutY="97.0" prefHeight="28.0" prefWidth="139.0" styleClass="fxf-label-field" text="0">
+                     <font>
+                        <Font name="System Bold" size="13.0" />
+                     </font>
+                  </FXFTextField>
+                  <Label layoutX="800.0" layoutY="148.0" text="Volume da Camada :" />
+                  <FXFTextField id="01" fx:id="it_layervolume" alignment="CENTER" editable="false" layoutX="967.0" layoutY="141.0" prefHeight="30.0" prefWidth="102.0" styleClass="fxf-label-field" text="0">
+                     <font>
+                        <Font name="System Bold" size="13.0" />
+                     </font>
+                  </FXFTextField>
+                  <Label layoutX="800.0" layoutY="194.0" text="Temperatura :" />
+                  <FXFTextField id="01" fx:id="it_temperature" alignment="CENTER" focusPosition="6" layoutX="962.0" layoutY="186.0" prefHeight="28.0" prefWidth="109.0" promptText="Em graus" styleClass="fxf-text-field" />
+                  <Label layoutX="1092.0" layoutY="194.0" text="℃" />
+                  <Label layoutX="1086.0" layoutY="148.0" text="cm³" />
+                  <FXFTextField fx:id="it_calibfile" editable="false" layoutX="800.0" layoutY="54.0" prefHeight="26.0" prefWidth="300.0" promptText="Arquivo de Calibração" styleClass="fxf-label-field" text="calib:quartzo_nist_1341:1112192310">
+                     <font>
+                        <Font size="11.0" />
+                     </font>
+                  </FXFTextField>
+                  <AnchorPane fx:id="pnl_user" layoutX="840.0" layoutY="-25.0" prefHeight="301.0" prefWidth="270.0" styleClass="fxf-userpanel" visible="false">
+                     <children>
+                        <Button fx:id="bt_logout" layoutX="103.0" layoutY="249.0" mnemonicParsing="false" onAction="#logout_action" text="Logout" visible="false">
+                           <font>
+                              <Font size="19.0" />
+                           </font>
+                        </Button>
+                        <Label alignment="CENTER" contentDisplay="CENTER" layoutX="7.0" layoutY="14.0" prefHeight="18.0" prefWidth="253.0" style="-fx-border-color: white white -fx-text-box-border white;" text="Autenticação de Usuários" textAlignment="CENTER" textFill="DODGERBLUE">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                        <ImageView fx:id="avatar" fitHeight="50.0" fitWidth="60.0" layoutX="193.0" layoutY="53.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@avatar1_50x60.png" />
+                           </image>
+                        </ImageView>
+                        <ComboBox fx:id="cb_profile" layoutX="34.0" layoutY="138.0" onAction="#profile_action" prefHeight="26.0" prefWidth="212.0" />
+                        <Label layoutX="34.0" layoutY="111.0" text="Perfil :" />
+                        <Label fx:id="lb_avatar" alignment="CENTER" contentDisplay="CENTER" layoutX="34.0" layoutY="53.0" prefHeight="48.0" prefWidth="137.0" text="Default" textAlignment="CENTER" wrapText="true" />
+                        <Label layoutX="34.0" layoutY="184.0" text="Logado desde :" />
+                        <Label fx:id="lb_logged" layoutX="34.0" layoutY="213.0" prefHeight="16.0" prefWidth="212.0" style="-fx-border-color: white white -fx-text-box-border white;" text="14/12/2019 - 15:47" />
+                     </children>
+                  </AnchorPane>
+                  <Label layoutX="734.0" layoutY="164.0" text="\%" />
+                  <CheckListView fx:id="checklist1" layoutX="574.0" layoutY="88.0" opacity="0.0" prefHeight="77.0" prefWidth="193.0" />
+                  <DateWidget fx:id="date" layoutX="825.0" layoutY="248.0" />
+               </children>
+            </AnchorPane>
+         </children>
+      </HBox>
+   </children>
+</VBox>

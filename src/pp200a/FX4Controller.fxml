@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox fx:id="rootpane" prefHeight="800.0" prefWidth="812.0" style="-fx-border-color: black;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <StackPane alignment="CENTER_LEFT" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="80.0" style="-fx-background-color: brown;">
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+         <VBox.margin>
+            <Insets />
+         </VBox.margin>
+         <padding>
+            <Insets left="20.0" />
+         </padding>
+         <children>
+            <Label text="AJUDA" textFill="WHITE" StackPane.alignment="CENTER_LEFT">
+               <font>
+                  <Font name="DejaVu Sans Bold" size="48.0" />
+               </font>
+               <StackPane.margin>
+                  <Insets left="30.0" />
+               </StackPane.margin>
+            </Label>
+         </children></StackPane>
+   </children>
+</VBox>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.opus.fxsupport.FXFHeaderband?>
+<?import com.opus.fxsupport.FXFNavband?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+
+
+<VBox fx:id="canvas" alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1366.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pp200a.CanvasFXController">
+   <children>
+      <FXFHeaderband fx:id="headerband" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS" />
+      <AnchorPane fx:id="rootpane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="700.0" />
+      <FXFNavband fx:id="navband" maxWidth="1.7976931348623157E308" />
+   </children>
+</VBox>
