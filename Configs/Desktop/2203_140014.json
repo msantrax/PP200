@@ -1,0 +1,67 @@
+{
+  "items": [
+    {
+      "appclass": "FX1Controller",
+      "configid": "1663960185550547280",
+      "argument": "analise_blaine:CP40",
+      "iconlabel": "Nova Analise Blaine 1",
+      "iconpath": "/home/acp/PP200/Resources/Images/acp_bkg.png",
+      "buttonbkgcolor": "seagreen",
+      "buttonlabelcolor": "white"
+    },
+    {
+      "appclass": "FX3Controller",
+      "configid": "1662645678835289999",
+      "argument": "database:default",
+      "iconlabel": "Nova Pesquisa de Resultados",
+      "iconpath": "/home/acp/PP200/Resources/Icons/utilities-file-archiver.png",
+      "buttonbkgcolor": "yellow",
+      "buttonlabelcolor": "black"
+    },
+    {
+      "appclass": "FX1Controller",
+      "configid": "1663962068835084893",
+      "argument": "analise_yara:default",
+      "iconlabel": "Nova Analise Yara",
+      "iconpath": "/home/acp/PP200/Resources/Images/Service_support.jpg",
+      "buttonbkgcolor": "brown",
+      "buttonlabelcolor": "yellow"
+    },
+    {
+      "appclass": "FX2Controller",
+      "configid": "1663962122551649718",
+      "argument": "calib_blaine:default",
+      "iconlabel": "Nova Calibração Blaine",
+      "iconpath": "resources/settings_canvas.png",
+      "buttonbkgcolor": "dodgerblue",
+      "buttonlabelcolor": "white"
+    },
+    {
+      "appclass": "FX1Controller",
+      "configid": "1662461162999155513",
+      "argument": "analise_blaine:CP32",
+      "iconlabel": "Nova Analise Blaine",
+      "iconpath": "/home/acp/PP200/Resources/Images/petrochemical_plant.jpg",
+      "buttonbkgcolor": "seagreen",
+      "buttonlabelcolor": "white"
+    },
+    {
+      "appclass": "FX4Controller",
+      "configid": "1663992761049075414",
+      "argument": "manual:default",
+      "iconlabel": "Nova página do manual",
+      "iconpath": "/home/acp/PP200/Resources/Imagethumbs/saas.png",
+      "buttonbkgcolor": "seagreen",
+      "buttonlabelcolor": "white"
+    }
+  ],
+  "gridposition": "CENTER",
+  "canvasheight": 768,
+  "canvaswidth": 1366,
+  "wallpaper": "/home/acp/PP200/Resources/Wallpapers/Earthrise1_Apollo8.jpg",
+  "darkwallpaper": true,
+  "label": "ACP 1 - A Direita",
+  "classtype": "com.opus.fxsupport.LauncherConfig",
+  "id": "id",
+  "argument": "ACP Center"
+}

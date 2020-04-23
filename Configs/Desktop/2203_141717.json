@@ -1,0 +1,49 @@
+{
+  "items": [
+    {
+      "appclass": "FX1Controller",
+      "configid": "FX1-A",
+      "argument": "analise_yara:default",
+      "iconlabel": "Analises (Yara)",
+      "iconpath": "resources/service_canvas.png",
+      "buttonbkgcolor": "seagreen",
+      "buttonlabelcolor": "white"
+    },
+    {
+      "appclass": "FX3Controller",
+      "configid": "FX3-A",
+      "argument": "database:default",      
+      "iconlabel": "Banco de Dados",
+      "iconlabelcolor": "red",
+      "iconpath": "resources/build_canvas.png",
+      "buttonbkgcolor": "yellow",
+      "buttonlabelcolor": "black"
+    },
+    {
+      "appclass": "FX4Controller",
+      "configid": "FX4-A",
+      "argument": "manual:default",           
+      "iconlabel": "Documentação",
+      "iconpath": "resources/help_canvas.png",
+      "buttonbkgcolor": "brown",
+      "buttonlabelcolor": "yellow"
+    },
+    {
+      "appclass": "FX1Controller",
+      "configid": "FX1-B",
+      "iconlabel": "Analises (Yara)",
+      "iconpath": "resources/settings_canvas.png",
+      "buttonbkgcolor": "dodgerblue",
+      "buttonlabelcolor": "white"
+    }
+  ],
+  "gridposition": "CLEAN",
+  "canvasheight": 768,
+  "canvaswidth": 1366,
+  "wallpaper": "/home/acp/PP200/Resources/Wallpapers/Arp87.jpg",
+  "darkwallpaper": true,
+  "label": "ACP 1 - A Direita",
+  "classtype": "com.opus.fxsupport.LauncherConfig",
+  "id": "id",
+  "argument": "ACP Clean"
+}

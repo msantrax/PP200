@@ -1,0 +1,15 @@
+{
+  "label": "Procura Default",
+  "report_template": [
+    "pdf1.pdf"
+  ],
+  "calib_file": "last",
+  "csv_file": "default.csv",
+  "descriptors": [
+    
+  ],
+  "classtype": "pp200a.ProfileSearch",
+  "id" : "id1",
+  "argument": "database:default"
+  
+}

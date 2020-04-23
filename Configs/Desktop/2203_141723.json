@@ -1,0 +1,50 @@
+{
+  "items": [
+    {
+      "appclass": "FX1Controller",
+      "configid": "1662720372735499031",
+      "argument": "analise_blaine:CP40",
+      "iconlabel": "Blaine CP-32",
+      "iconpath": "/home/acp/PP200/Resources/Images/viaumida.jpg",
+      "buttonbkgcolor": "seagreen",
+      "buttonlabelcolor": "white"
+    },
+    {
+      "appclass": "FX3Controller",
+      "configid": "FX3-A",
+      "argument": "database:default",      
+      "iconlabel": "Pesquisa Ultima Semana",
+      "iconlabelcolor": "red",
+      "iconpath": "/home/acp/PP200/Resources/Imagethumbs/controle.jpg",
+      "buttonbkgcolor": "yellow",
+      "buttonlabelcolor": "black"
+    },
+    {
+      "appclass": "FX4Controller",
+      "configid": "FX4-A",
+      "argument": "manual:default",       
+      "iconlabel": "Documentação",
+      "iconpath": "resources/help_canvas.png",
+      "buttonbkgcolor": "brown",
+      "buttonlabelcolor": "yellow"
+    },
+    {
+      "appclass": "FX1Controller",
+      "configid": "1662734289220958831",
+      "argument": "analise_blaine:quartzo",
+      "iconlabel": "Nova Analise Blaine",
+      "iconpath": "/home/acp/PP200/Resources/Images/acp_bkg.png",
+      "buttonbkgcolor": "dodgerblue",
+      "buttonlabelcolor": "white"
+    }
+  ],
+  "gridposition": "RIGHT",
+  "canvasheight": 768,
+  "canvaswidth": 1366,
+  "wallpaper": "/home/acp/PP200/Resources/Wallpapers/wp1.png",
+  "darkwallpaper": false,
+  "label": "ACP 1 - A Direita",
+  "classtype": "com.opus.fxsupport.LauncherConfig",
+  "id": "id",
+  "argument": "ACP Background"
+}

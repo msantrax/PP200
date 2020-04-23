@@ -5,6 +5,8 @@
  */
 package pp200a;
 
+import com.opus.syssupport.propertylink;
+import com.opus.syssupport.propertyfieldmap;
 import com.opus.syssupport.Config;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;

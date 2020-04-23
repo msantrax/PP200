@@ -9,6 +9,7 @@ package pp200a;
 import com.opus.syssupport.Profile;
 import com.opus.fxsupport.SystemMenu;
 import com.opus.fxsupport.EmptyValidator;
+import com.opus.fxsupport.FXFController;
 import com.opus.fxsupport.FXFField;
 import com.opus.fxsupport.FXFFieldDescriptor;
 import com.opus.fxsupport.FXFTextField;
@@ -17,6 +18,7 @@ import com.opus.fxsupport.FXFWidgetManager;
 import com.opus.fxsupport.NumberValidator;
 import com.opus.fxsupport.PropertyLinkDescriptor;
 import com.opus.fxsupport.VoidValidator;
+import com.opus.fxsupport.WidgetDescriptor;
 import com.opus.glyphs.FontAwesomeIcon;
 import com.opus.glyphs.GlyphsBuilder;
 import com.opus.syssupport.Config;
@@ -66,7 +68,6 @@ import javafx.scene.control.cell.MapValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
 
@@ -80,7 +81,7 @@ import org.controlsfx.validation.Validator;
 
 
 
-public class FX3Controller extends VBox implements com.opus.fxsupport.FXFController {
+public class FX3Controller extends FXFController implements com.opus.fxsupport.FXFControllerInterface {
 
     private static final Logger LOG = Logger.getLogger(FX3Controller.class.getName());
     
@@ -92,6 +93,7 @@ public class FX3Controller extends VBox implements com.opus.fxsupport.FXFControl
     private ValidationSupport vs;
     private LinkedHashMap<FXFField, FXFValidator>validators;
    
+    private String profilepath;
     private Profile profile;
     private Controller pp100ctrl = Controller.getInstance();
     private DBService dbsv = DBService.getInstance();
@@ -174,6 +176,13 @@ public class FX3Controller extends VBox implements com.opus.fxsupport.FXFControl
     }
     
     
+    public FX3Controller(FXMLLoader fxmlLoader, String profilepath) {
+        
+        wdgmanager = FXFWidgetManager.getInstance();
+        this.fxmlLoader = fxmlLoader; 
+        this.profilepath = profilepath;
+    }
+    
     private static final String UID = "FX3";
     @Override
     public String getUID() { return UID;}
@@ -195,6 +204,10 @@ public class FX3Controller extends VBox implements com.opus.fxsupport.FXFControl
     private VirnaServiceProvider ctrl;
     public void setAppController (VirnaServiceProvider ctrl){
         this.ctrl = ctrl;
+    }
+    
+    public void activateModel(){
+        //machine.activateModel(profile.getArgument());
     }
     
     
@@ -237,7 +250,7 @@ public class FX3Controller extends VBox implements com.opus.fxsupport.FXFControl
     public void updateField (String fieldname, String value, boolean required){
         
         FXFField field = wdgmanager.getWidget(this, fieldname);
-        FXFWidgetManager.WidgetDescriptor wd = wdgmanager.context.get(this).findByName(fieldname);
+        WidgetDescriptor wd = wdgmanager.context.get(this).findByName(fieldname);
         if (field != null){
             field.updateValue(value, wd.required);
             //LOG.info(String.format("Updating %s with %s / required = %s", fieldname, value, required));
@@ -246,14 +259,17 @@ public class FX3Controller extends VBox implements com.opus.fxsupport.FXFControl
             LOG.warning(String.format("Widgetmanager failed to locate widget : %s", fieldname));
         } 
     }
-     
+    
+    
+    
     private void initField(FXFField field, FXFFieldDescriptor fxfd){
         
         
         fxfd.setField(field);
         Control ctrl = (Control)fxfd.getField();
         
-        LinkedHashMap<String,PropertyLinkDescriptor>proplink_uimap = pp100ctrl.getCalUIMap();
+        //LinkedHashMap<String,PropertyLinkDescriptor>proplink_uimap = pp100ctrl.getCalUIMap();
+        
         
         ctrl.setTooltip(new Tooltip(fxfd.getTooltip_message()));
 
@@ -379,17 +395,17 @@ public class FX3Controller extends VBox implements com.opus.fxsupport.FXFControl
                                                 .setStopfocus(true)
                                                 .setPlink(fxfd.getName())
                                                 .setCallstate(localcallback);
-            proplink_uimap.put(fxfd.getName(), linkdesc);
+            //proplink_uimap.put(fxfd.getName(), linkdesc);
   
             LOG.info(String.format("Added local field %s", fxfd.getName()));
         }
         
-        FXFWidgetManager.WidgetDescriptor wd = wdgmanager.getWidgetDescriptor(this, fxfd.getName());
+        WidgetDescriptor wd = getWidgetDescriptor(fxfd.getName());
         wd.required = fxfd.isRequired();
-        PropertyLinkDescriptor pld = proplink_uimap.get(fxfd.getName());
-        if (wd != null && pld != null){
-            wd.linkdescriptor = pld;
-        }
+//        PropertyLinkDescriptor pld = proplink_uimap.get(fxfd.getName());
+//        if (wd != null && pld != null){
+//            wd.linkdescriptor = pld;
+//        }
      
    
     }
@@ -409,7 +425,7 @@ public class FX3Controller extends VBox implements com.opus.fxsupport.FXFControl
     @Override
     public void sendSignal (PropertyLinkDescriptor pld, String sigtype){
         
-        pp100ctrl.getQueue().offer(new SMTraffic(0l, 0l, 0, pld.getCallstate(), 
+        pp100ctrl.getQueue().offer(new SMTraffic(0l, 0l, 0, pld.getCallstate(), this.getClass(),
                                    new VirnaPayload().setObject(pld)));
         
     }
@@ -471,7 +487,8 @@ public class FX3Controller extends VBox implements com.opus.fxsupport.FXFControl
     
     
     
-    public void update(){
+    @Override
+    public void update(Scene scene){
         
         FXFField field;
         
@@ -1178,6 +1195,11 @@ public class FX3Controller extends VBox implements com.opus.fxsupport.FXFControl
 //    }
     
     //public Scene getScene() { return scene;}
+
+    @Override
+    public void update() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }
 
 

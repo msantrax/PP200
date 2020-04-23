@@ -105,7 +105,7 @@ public class DBService implements VirnaServiceProvider {
     
     public void loadDBRecords(String sql){
         
-        smqueue.offer(new SMTraffic(0l, 0l, 0, "LOADANALISES", 
+        smqueue.offer(new SMTraffic(0l, 0l, 0, "LOADANALISES", this.getClass(),
                                         new VirnaPayload()
                                         .setString(sql)
                                         .setCaller(this)
@@ -115,7 +115,7 @@ public class DBService implements VirnaServiceProvider {
              
     public void loadDBRecord(Long id){
         
-        smqueue.offer(new SMTraffic(0l, 0l, 0, "LOADANALISE", 
+        smqueue.offer(new SMTraffic(0l, 0l, 0, "LOADANALISE", this.getClass(),
                                         new VirnaPayload()
                                         .setLong1(id)
                                         .setCaller(this)
@@ -158,8 +158,6 @@ public class DBService implements VirnaServiceProvider {
 
         return records;
     }
-    
-    
     
     
     private String getStringTimestamp(int timestamp){
@@ -544,7 +542,7 @@ public class DBService implements VirnaServiceProvider {
         try {
             Boolean hasrecord = locateRecord(uid);
             if (vsp != null){
-                vsp.processSignal(new SMTraffic(0l, 0l, 0, payload.getCallerstate(), 
+                vsp.processSignal(new SMTraffic(0l, 0l, 0, payload.getCallerstate(), this.getClass(),
                                         new VirnaPayload()
                                         .setFlag1(hasrecord)
                                         .setLong1(uid)
@@ -563,7 +561,7 @@ public class DBService implements VirnaServiceProvider {
                         + "<li>Realmente não há tais registros, tente um filtro mais abrangente</li>"
                         + "</ul>"
                     + "</html>"; 
-                vsp.processSignal(new SMTraffic(0l, 0l, 0, payload.getCallerstate(), 
+                vsp.processSignal(new SMTraffic(0l, 0l, 0, payload.getCallerstate(), this.getClass(),
                                         new VirnaPayload()
                                         .setString("Falha no acesso ao banco de dados&"+ message)
                                         .setFlag2(true)
@@ -587,7 +585,7 @@ public class DBService implements VirnaServiceProvider {
         try {
             AnaliseDescriptor ad = loadAnalise(id);
             if (ctrl != null){
-                ctrl.loadRecord(ad);
+                //ctrl.loadRecord(ad);
             }
             else{
                 log.severe("unable to talk to controller");
@@ -621,7 +619,7 @@ public class DBService implements VirnaServiceProvider {
             log.warning(String.format("Analise %d/%s was registered on database", ad.getUid(), ad.getSid()));
             if (vsp != null){
                 String message = String.format("A analise \'%s\' foi registrada no banco de dados com a chave %d", ad.getSid(), ad.getUid());
-                vsp.processSignal(new SMTraffic(0l, 0l, 0, payload.getCallerstate(), 
+                vsp.processSignal(new SMTraffic(0l, 0l, 0, payload.getCallerstate(), this.getClass(),
                                         new VirnaPayload()
                                         .setString(message)
                                         .setFlag1(true)
@@ -633,7 +631,7 @@ public class DBService implements VirnaServiceProvider {
         catch (Exception ex) {
             log.warning(String.format("Failed to store record on Database"));
             if (vsp != null){
-                vsp.processSignal(new SMTraffic(0l, 0l, 0, payload.getCallerstate(), 
+                vsp.processSignal(new SMTraffic(0l, 0l, 0, payload.getCallerstate(), this.getClass(),
                                         new VirnaPayload()
                                         .setString("Falha no acesso ao banco de dados&Erro ao registrar analise no banco")
                                         .setFlag2(true)

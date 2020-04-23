@@ -6,6 +6,7 @@
 package pp200a;
 
 
+import com.opus.fxsupport.FXFController;
 import com.opus.syssupport.Profile;
 import com.opus.fxsupport.SystemMenu;
 import com.opus.fxsupport.FXFField;
@@ -25,7 +26,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -36,10 +36,7 @@ import javafx.scene.web.WebView;
 
 
 
-
-
-
-public class FX4Controller extends VBox implements com.opus.fxsupport.FXFController {
+public class FX4Controller extends FXFController implements com.opus.fxsupport.FXFControllerInterface {
 
     private static final Logger LOG = Logger.getLogger(FX4Controller.class.getName());
     
@@ -47,7 +44,7 @@ public class FX4Controller extends VBox implements com.opus.fxsupport.FXFControl
     private static final int PANEL_WIDTH_INT = 1366;
     private static final int PANEL_HEIGHT_INT = 400;
     
-    
+    private String profilepath;
     private FXFWidgetManager wdgmanager;
     
     private Scene scene;
@@ -69,10 +66,23 @@ public class FX4Controller extends VBox implements com.opus.fxsupport.FXFControl
         this.fxmlLoader = fxmlLoader; 
     }
     
+    public FX4Controller(FXMLLoader fxmlLoader, String profilepath) {
+        
+        wdgmanager = FXFWidgetManager.getInstance();
+        this.fxmlLoader = fxmlLoader; 
+        this.profilepath = profilepath;
+    }
+    
+    public void activateModel(){
+        //machine.activateModel(profile.getArgument());
+    }
+    
+    
+    
     @FXML
     void initialize() {
 
-        LOG.info("FX3Controller initializing ...");
+        LOG.info("FX4Controller initializing ...");
         
         //wdgmanager = FXFWidgetManager.getInstance();
         wdgmanager.addContext(this, fxmlLoader.getNamespace());
@@ -84,8 +94,13 @@ public class FX4Controller extends VBox implements com.opus.fxsupport.FXFControl
     }
     
     @Override
+    public void update(Scene scene){
+        this.scene = scene;
+    }
+    
+    @Override
     public void update(){
-        
+        update(scene);
     }
     
     @Override
@@ -168,9 +183,6 @@ public class FX4Controller extends VBox implements com.opus.fxsupport.FXFControl
     
     
     
-    
-    
-    
     //  ========================================= FXF tools =======================================================
     
     private static final String UID = "FX4";
@@ -219,6 +231,11 @@ public class FX4Controller extends VBox implements com.opus.fxsupport.FXFControl
     
     public void yieldFocus(FXFField field, boolean fwd){
         wdgmanager.yieldFocus(this, field, fwd);
+    }
+
+    @Override
+    public void updateField(String fieldname, String value, boolean required) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
     

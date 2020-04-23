@@ -5,8 +5,9 @@
  */
 package pp200a;
 
-import com.opus.fxsupport.ActivityDescriptor;
+import com.opus.syssupport.ActivityDescriptor;
 import com.opus.fxsupport.FXFWindowManager;
+import com.opus.syssupport.ActivitiesMap;
 import com.opus.syssupport.PicnoUtils;
 import java.util.LinkedHashMap;
 import java.util.logging.Logger;
@@ -30,23 +31,6 @@ public class PP200a extends Application{
         wm.setAppController(ctrl);
         PicnoUtils.appclass = this.getClass();
         
-        LinkedHashMap<String, ActivityDescriptor> activities = wm.getActivitiesmap();
-        activities.put("Analises Blaine", new ActivityDescriptor ("FX1Controller", "Analises Blaine", 
-                                                "Nova Analise Blaine", "profile_blaine" ));
-        activities.put("Analises Yara", new ActivityDescriptor ("FX1Controller", "Analises Yara", 
-                                                "Nova Analise Yara", "profile_yara" ));
-        activities.put("Pesquisa de resultados", new ActivityDescriptor ("FX3Controller", "Pesquisa de resultados", 
-                                                "Nova Pesquisa de Resultados", "none" ));
-        activities.put("Manual do Instrumento", new ActivityDescriptor ("FX4Controller", "Manual do Instrumento", 
-                                                "Manual / Ajuda", "help_page" ));
-        activities.put("Calibração Blaine", new ActivityDescriptor ("FX1Controller", "Calibração Blaine", 
-                                                "Nova Calibração Blaine", "profile_calib" ));
-        activities.put("Configuração do Sistema", new ActivityDescriptor ("FX1Controller", "Configuração do Sistema", 
-                                                "Nova Analise Blaine", "none" ));
-        activities.put("Área de Serviços", new ActivityDescriptor ("FX1Controller", "Área de Serviços", 
-                                                "Acesso a área de serviços", "none" ));
-        
-        
         wm.updateCanvasMap();
         wm.activateWindow("CANVAS");
   
@@ -54,10 +38,71 @@ public class PP200a extends Application{
        
     }
     
+    private static void loadActivities(){
+        
+        // Blaine Analysis Activity
+        ActivitiesMap.registerActivity("analise_blaine", new ActivityDescriptor (FX1Controller.class)
+                                                            .setMachineclass(FX1SMachine.class)
+                                                            .setModelclass(FX1Model.class)
+                                                            .setArgument_prefix("analise_blaine")
+                                                            .setName("Analises Blaine")
+                                                            .setLabel("Nova Analise Blaine")
+                                                            .setPublicstates(true)
+        );
+        
+        // Yara Analysis Activity
+        ActivitiesMap.registerActivity("analise_yara", new ActivityDescriptor (FX1Controller.class)
+                                                            .setMachineclass(FX1SMachine.class)
+                                                            .setModelclass(FX1Model.class)
+                                                            .setArgument_prefix("analise_yara")
+                                                            .setName("Analises Yara")
+                                                            .setLabel("Nova Analise Yara")
+                                                            .setPublicstates(true)
+        );
+        
+        
+        // Blaine Calibration Activity
+        ActivitiesMap.registerActivity("calib_blane", new ActivityDescriptor (FX2Controller.class)
+                                                            .setMachineclass(FX2SMachine.class)
+                                                            .setModelclass(FX2Model.class)
+                                                            .setArgument_prefix("calib_blaine")
+                                                            .setName("Calibração Blaine")
+                                                            .setLabel("Nova Calibração Blaine")
+                                                            .setPublicstates(true)
+        );
+        
+        // Database Search Activity
+        ActivitiesMap.registerActivity("database", new ActivityDescriptor (FX3Controller.class)
+                                                            .setMachineclass(null)
+                                                            .setModelclass(null)
+                                                            .setArgument_prefix("database")
+                                                            .setName("Banco de Dados")
+                                                            .setLabel("Nova Procura no Banco de Dados")
+                                                            .setPublicstates(false)
+        );
+        
+        
+        // Blaine Calibration Activity
+        ActivitiesMap.registerActivity("help", new ActivityDescriptor (FX4Controller.class)
+                                                            .setMachineclass(null)
+                                                            .setModelclass(null)
+                                                            .setArgument_prefix("manual")
+                                                            .setName("Manual do Instrumento")
+                                                            .setLabel("Nova página do manual")
+                                                            .setPublicstates(false)
+        );
+       
+        
+        
+    }
+    
+    
     
     public static void main(String[] args) {
         
+        
         PicnoUtils.loadConfig();
+        loadActivities();
         
         ctrl = Controller.getInstance();
         ctrl.startService();

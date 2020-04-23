@@ -40,10 +40,10 @@
          <children>
             <VBox alignment="TOP_CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="200.0" styleClass="fxf-sidebar" HBox.hgrow="ALWAYS">
                <children>
-                  <Label fx:id="sidebar_newsearch" alignment="BOTTOM_CENTER" contentDisplay="TOP" focusTraversable="false" graphicTextGap="20.0" onMouseClicked="#newsearch_action" prefHeight="100.0" styleClass="fxf-sidebarbt" text="Nova Pesquisa" textAlignment="CENTER" />
-                  <Label fx:id="sidebar_visualize" alignment="BOTTOM_CENTER" contentDisplay="TOP" focusTraversable="false" graphicTextGap="0.0" layoutX="68.0" layoutY="11.0" onMouseClicked="#visualize_action" prefHeight="100.0" styleClass="fxf-sidebarbt" text="Visualizar Analise" textAlignment="CENTER" />
-                  <Label fx:id="sidebar_remove" alignment="BOTTOM_CENTER" contentDisplay="TOP" focusTraversable="false" graphicTextGap="0.0" layoutX="68.0" layoutY="11.0" onMouseClicked="#remove_action" prefHeight="100.0" styleClass="fxf-sidebarbt" text="Remover Registro" textAlignment="CENTER" />
-                  <Label fx:id="sidebar_csv" alignment="BOTTOM_CENTER" contentDisplay="TOP" focusTraversable="false" graphicTextGap="0.0" layoutX="52.0" layoutY="43.0" onMouseClicked="#csv_action" prefHeight="100.0" styleClass="fxf-sidebarbt" text="Exportar CSV" textAlignment="CENTER" />
+                  <Label fx:id="sidebar_newsearch" alignment="BOTTOM_CENTER" contentDisplay="TOP" focusTraversable="false" graphicTextGap="25.0" onMouseClicked="#newsearch_action" prefHeight="100.0" styleClass="fxf-sidebarbt" text="Nova Pesquisa" textAlignment="CENTER" />
+                  <Label fx:id="sidebar_visualize" alignment="BOTTOM_CENTER" contentDisplay="TOP" focusTraversable="false" graphicTextGap="25.0" layoutX="68.0" layoutY="11.0" onMouseClicked="#visualize_action" prefHeight="100.0" styleClass="fxf-sidebarbt" text="Visualizar Analise" textAlignment="CENTER" />
+                  <Label fx:id="sidebar_remove" alignment="BOTTOM_CENTER" contentDisplay="TOP" focusTraversable="false" graphicTextGap="25.0" layoutX="68.0" layoutY="11.0" onMouseClicked="#remove_action" prefHeight="100.0" styleClass="fxf-sidebarbt" text="Remover Registro" textAlignment="CENTER" />
+                  <Label fx:id="sidebar_csv" alignment="BOTTOM_CENTER" contentDisplay="TOP" focusTraversable="false" graphicTextGap="25.0" layoutX="52.0" layoutY="43.0" onMouseClicked="#csv_action" prefHeight="100.0" styleClass="fxf-sidebarbt" text="Exportar CSV" textAlignment="CENTER" />
                </children>
                <HBox.margin>
                   <Insets top="50.0" />
