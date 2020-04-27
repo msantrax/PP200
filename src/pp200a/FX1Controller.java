@@ -6,6 +6,8 @@
 package pp200a;
 
 
+import com.opus.fxsupport.BlaineDevice;
+import com.opus.fxsupport.BlaineFieldDescriptor;
 import com.opus.fxsupport.SystemMenu;
 import com.opus.fxsupport.DateWidget;
 import com.opus.fxsupport.PropertyLinkDescriptor;
@@ -14,9 +16,10 @@ import com.opus.fxsupport.FXFFieldDescriptor;
 import com.opus.fxsupport.FXFTextField;
 import com.opus.fxsupport.NumberValidator;
 import com.opus.fxsupport.EmptyValidator;
+import com.opus.fxsupport.FXFBlaineDeviceController;
 import com.opus.fxsupport.FXFCheckListViewNumber;
 import com.opus.fxsupport.FXFController;
-import com.opus.fxsupport.IndexedCheckModel;
+import com.opus.fxsupport.FXFCountdownTimer;
 import com.opus.fxsupport.WidgetDescriptor;
 import com.opus.fxsupport.VoidValidator;
 import com.opus.glyphs.FontAwesomeIcon;
@@ -30,15 +33,9 @@ import com.opus.syssupport.VirnaServiceProvider;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Random;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import javafx.beans.Observable;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -68,8 +65,6 @@ public class FX1Controller extends FXFController implements com.opus.fxsupport.F
     private Controller appctrl = Controller.getInstance();
     private FX1SMachine machine;
     private FX1Model model;
-    
-    
     
     
     
@@ -115,9 +110,6 @@ public class FX1Controller extends FXFController implements com.opus.fxsupport.F
     @FXML
     private FXFTextField it_blaineresult;
 
-    @FXML
-    private FXFCheckListViewNumber<String> checklist1;
-
     
     @FXML
     private FXFTextField it_analisetime;
@@ -153,12 +145,12 @@ public class FX1Controller extends FXFController implements com.opus.fxsupport.F
     @FXML
     private FXFTextField it_temperature;
 
-    
     @FXML
     private DateWidget date;
 
-    
-    
+    @FXML
+    private FXFBlaineDeviceController blainedevice;
+
     
     public FX1Controller(FXMLLoader fxmlLoader) {
         //wdgmanager = FXFWidgetManager.getInstance();
@@ -178,12 +170,16 @@ public class FX1Controller extends FXFController implements com.opus.fxsupport.F
     @Override
     public void setAppController (VirnaServiceProvider ctrl){
         this.ctrl = ctrl;
+        model.setAppCtrl(ctrl);
+        machine.setAppController(ctrl);
+        blainedevice.setAppController(ctrl);
+        
     }
     
     public void activateModel(){
         machine.activateModel(profile.getArgument());
+        BlaineDevice.getInstance().setFXController(this);
     }
-    
     
     
     @FXML
@@ -198,13 +194,15 @@ public class FX1Controller extends FXFController implements com.opus.fxsupport.F
         model = new FX1Model();
         model.setProfile(profile);
         model.setMachine(machine);
-        model.setAppCtrl(ctrl);
+        model.setAppCtrl(appctrl);
         model.setFXCtrl(this);
             
-        machine.setAppController(ctrl);
+        machine.setAppController(appctrl);
         machine.addModel(profile.getArgument(), model);
         machine.mapProperties(profile.getArgument(), model.getAn());
         machine.activateModel(profile.getArgument());
+        
+        blainedevice.setAppController(appctrl);
         
         addContext(fxmlLoader.getNamespace());
         
@@ -215,6 +213,27 @@ public class FX1Controller extends FXFController implements com.opus.fxsupport.F
     }
     
     
+    @Override
+    public FXFCountdownTimer getCDT() {
+        return blainedevice.getCDT();
+    }
+    
+    @Override
+    public FXFCheckListViewNumber<String> getRunControl() {
+        return blainedevice.getRunControl();
+    }
+    
+    @Override
+    public void resetDevices() {
+//        appctrl.processSignal(new SMTraffic(0l, 0l, 0, "RESETBLAINE", this.getClass(),
+//                                   new VirnaPayload().setObject(this)
+//        ));
+        
+        blainedevice.getRunControl().initTimeList();
+        
+    }
+    
+
     @Override
     public SystemMenu getMenu(boolean isadm){
         
@@ -362,9 +381,6 @@ public class FX1Controller extends FXFController implements com.opus.fxsupport.F
             });
         } // Void Validator
      
-        
-        
-        
     }
     
     
@@ -393,30 +409,38 @@ public class FX1Controller extends FXFController implements com.opus.fxsupport.F
             }
         });  
         
-        initValidators (field, fxfd);
-        
-        FXFController.updateAutocomplete(fxfd, null);
-        
-        String localcallback = fxfd.getLocal_callback();
-        if (!localcallback.equals("")){
-            PropertyLinkDescriptor linkdesc;
-            linkdesc = new PropertyLinkDescriptor()
-                                                .setFxfield(field)
-                                                .setInput(true)
-                                                .setStopfocus(true)
-                                                .setPlink(fxfd.getName())
-                                                .setCallstate(localcallback);
-            model.getAna_proplink_uimap().put(fxfd.getName(), linkdesc);
-            LOG.info(String.format("Added local field %s", fxfd.getName()));
+        String custom_classtype = fxfd.getCustom_classtype();
+        if (custom_classtype != null && !custom_classtype.isEmpty()){
+            if (fxfd.getCustom() == null){
+                fxfd.setCustom(new BlaineFieldDescriptor());
+            }
         }
+        else{
+            initValidators (field, fxfd);
         
-        WidgetDescriptor wd = getWidgetDescriptor(fxfd.getName());
-        wd.required = fxfd.isRequired();
-        PropertyLinkDescriptor pld3 = model.getAna_proplink_uimap().get(fxfd.getName());
-        if (wd != null && pld3 != null){
-            wd.linkdescriptor = pld3;
+            FXFController.updateAutocomplete(fxfd, null);
+            
+            String localcallback = fxfd.getLocal_callback();
+            if (!localcallback.equals("")){
+                PropertyLinkDescriptor linkdesc;
+                linkdesc = new PropertyLinkDescriptor()
+                                                    .setFxfield(field)
+                                                    .setInput(true)
+                                                    .setStopfocus(true)
+                                                    .setPlink(fxfd.getName())
+                                                    .setCallstate(localcallback);
+                model.getAna_proplink_uimap().put(fxfd.getName(), linkdesc);
+                LOG.info(String.format("Added local field %s", fxfd.getName()));
+            }
+
+            WidgetDescriptor wd = getWidgetDescriptor(fxfd.getName());
+            wd.required = fxfd.isRequired();
+            PropertyLinkDescriptor pld3 = model.getAna_proplink_uimap().get(fxfd.getName());
+            if (wd != null && pld3 != null){
+                wd.linkdescriptor = pld3;
+            }
         }
-              
+             
     }
     
     
@@ -452,194 +476,25 @@ public class FX1Controller extends FXFController implements com.opus.fxsupport.F
         ArrayList<FXFFieldDescriptor> descriptors = profile.getDescriptors();
          
         for (FXFFieldDescriptor fxfd : descriptors){
+            
             field = getWidget(fxfd.getName());
             if (field !=null){
-                //LOG.info(String.format("Profile load said field %s was updated", fxfd.getName()));
+                LOG.info(String.format("Profile load said field %s was updated", fxfd.getName()));
                 initField(field, fxfd);
             }
             else{
                 LOG.warning(String.format("Profile load said Failed do locate field %s on controller wdglist...", fxfd.getName()));
             }
         }
-        
-        
-        //initTimeList();
-//        checklist1.setItems(time_entries);
-//        checklist1.getCheckModel().getCheckedItems().addListener(this::aclistChanged);
-        
-        
-        //checklist1.getCheckModel().getCheckedIndices().
-        
-//        checklist1.getCheckModel().getCheckedItems().addListener((ListChangeListener<String>) change -> {
-//            
-//            boolean changed = false;
-//            LOG.info(String.format("Checklist addListener called ..."));   
-//            
-//            while (change.next()) {
-//                LOG.info(String.format("Checklist changed : %s", change.toString()));   
-//                int index = change.getFrom();
-//                Double v = getTime_values().get(index);
-//                    
-//                if (!change.wasAdded()){
-//                    LOG.info(String.format("Change removed item %d", index));    
-//                    getTime_values().remove(index);
-//                    getTime_values().add(index, 0.0);
-//                    changed = true;
-//                }
-//                else{
-//                    if (v == 0.0){
-//                        LOG.info(String.format("Change added item %d", index));
-//                        String s = change.getAddedSubList().get(0);
-//                        try{
-//                            Double value = Double.valueOf(s);
-//                            getTime_values().remove(index);
-//                            getTime_values().add(index, value);
-//                            changed = true;
-//                        }
-//                        catch (Exception ex){
-//                            LOG.warning(String.format("Failed to convert Checked list item on %d", index));   
-//                            return;
-//                        }
-//                    }
-//                }
-//                
-//                if (changed){
-//                    appctrl.processSignal(new SMTraffic(0l, 0l, 0, "CALCULATETIME", this.getClass(),
-//                                   new VirnaPayload().setObject(time_values)));
-//                }
-//            }
-//        });
+ 
         
         sidebar_btcycle.setGraphic(GlyphsBuilder.getAwesomeGlyph(FontAwesomeIcon.REFRESH, "black", 4));
         sidebar_btstore.setGraphic(GlyphsBuilder.getAwesomeGlyph(FontAwesomeIcon.DATABASE, "black", 4));
         sidebar_btreport.setGraphic(GlyphsBuilder.getAwesomeGlyph(FontAwesomeIcon.FILE_PDF_ALT, "black", 4));
         sidebar_btbroadcast.setGraphic(GlyphsBuilder.getAwesomeGlyph(FontAwesomeIcon.SHARE_ALT, "black", 4));
         sidebar_btloadfile.setGraphic(GlyphsBuilder.getAwesomeGlyph(FontAwesomeIcon.ARCHIVE, "black", 4));
-        sidebar_btrun.setGraphic(GlyphsBuilder.getAwesomeGlyph(FontAwesomeIcon.PLAY, "black", 4));
-
+      
     }
-    
-    
-    
-    
-    // ============================================ Timelist services ===================================================
-    
-   
-    public ObservableList<String> time_entries = FXCollections.observableArrayList();
-    private ArrayList<Double> time_values = new ArrayList<>();
-    
-    public void aclistChanged(Observable change){
-        
-        //LOG.info(String.format("aclist changed - touched = %s", touched));
-        
-        boolean changed = false;
-        
-        IndexedCheckModel<String> im = checklist1.getCheckModel();
-        
-        LOG.info(String.format("AclistChanged = %s", checklist1.getCheckModel().getCheckedItems()));   
-        
-        
-//        while (change.next()) {
-//            LOG.info(String.format("Checklist changed : %s", change.toString()));   
-//            int index = change.getFrom();
-//            Double v = getTime_values().get(index);
-//
-//            if (!change.wasAdded()){
-//                LOG.info(String.format("Change removed item %d", index));    
-//                getTime_values().remove(index);
-//                getTime_values().add(index, 0.0);
-//                changed = true;
-//            }
-//            else{
-//                if (v == 0.0){
-//                    LOG.info(String.format("Change added item %d", index));
-//                    String s = change.getAddedSubList().get(0);
-//                    try{
-//                        Double value = Double.valueOf(s);
-//                        getTime_values().remove(index);
-//                        getTime_values().add(index, value);
-//                        changed = true;
-//                    }
-//                    catch (Exception ex){
-//                        LOG.warning(String.format("Failed to convert Checked list item on %d", index));   
-//                        return;
-//                    }
-//                }
-//            }
-//
-//            if (changed){
-//                appctrl.processSignal(new SMTraffic(0l, 0l, 0, "CALCULATETIME", this.getClass(),
-//                               new VirnaPayload().setObject(time_values)));
-//            }
-//        }
-    }
-    
-    
-    
-    public void addTimeEntry (String item) { 
-        
-        try{
-            Double value = Double.valueOf(item);
-            getTime_values().add(value);
-        }
-        catch (Exception ex){
-            return;
-        }
-        
-        
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                time_entries.add(item);                
-//                for (int i = 0; i < getTime_values().size(); i++) {
-//                    Double d = getTime_values().get(i);
-//                    if (d != 0){
-//                        checklist1.getCheckModel().check(i);
-//                    }
-//                }             
-                //it_analisetime.setText("");
-                
-//                appctrl.processSignal(new SMTraffic(0l, 0l, 0, "CALCULATETIME", this.getClass(),
-//                                   new VirnaPayload()
-//                                           .setObject(time_values)
-//                                           .setFlag1(Boolean.FALSE)
-//                                    ));     
-            }
-        });
-    }
- 
-    
-    public void initTimeList() { 
-        
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                time_entries.clear();
-                getTime_values().clear();
-            }
-        });
-    }
-    
-    public List<String> getCheckedTimeEntries() { 
-        return checklist1.getCheckModel().getCheckedItems();
-    }
-    
-    
-    public ArrayList<Double> getTime_values() {
-        return time_values;
-    }
-
-    public void setTime_values(ArrayList<Double> time_values) {
-        this.time_values = time_values;
-    }
-    
-    
- 
-    
-    
-    
-    
-    
     
     
     
@@ -664,7 +519,7 @@ public class FX1Controller extends FXFController implements com.opus.fxsupport.F
     
     @FXML
     void btcycle_action(MouseEvent event) {
-        checklist1.initTimeList();
+        //checklist1.initTimeList();
         machine.newAnalise();
     }
 
@@ -690,9 +545,11 @@ public class FX1Controller extends FXFController implements com.opus.fxsupport.F
     
     @FXML
     void btrun_action(MouseEvent event) {
-        Random rand = new Random();
+        //Random rand = new Random();
         //addTimeEntry (String.format(Locale.US, "%5.2f", 125.0 + (rand.nextDouble()-0.5)*2));
-        checklist1.addEntry(125 + ((rand.nextDouble()-0.5)*2), "Normal");
+        //checklist1.addEntry(160 + ((rand.nextDouble()-0.5)*2), "Normal");
+        appctrl.processSignal(new SMTraffic(0l, 0l, 0, "INITRUNS", this.getClass(),
+                                   new VirnaPayload()));
     }
     
    
@@ -719,11 +576,7 @@ public class FX1Controller extends FXFController implements com.opus.fxsupport.F
 //            pnl_user.setVisible(true);
 //        }
     }
-    
-    
-    
-    
-    
+  
     public Scene getScene() { return scene;}
 
     private static final String UID = "FX1";

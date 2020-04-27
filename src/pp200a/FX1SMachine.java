@@ -36,6 +36,8 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import com.opus.fxsupport.FXFControllerInterface;
+import java.util.Random;
+import javafx.application.Platform;
 
 
 
@@ -201,6 +203,9 @@ public class FX1SMachine extends ActivityMachine {
         
     }
     
+    
+    
+    
     public void newAnalise(){      
         ctrl.processSignal(new SMTraffic(0l, 0l, 0, "NEWANALISE", this.getClass(),
                                    new VirnaPayload().setObject(current_model.getAn())
@@ -352,10 +357,7 @@ public class FX1SMachine extends ActivityMachine {
         
         anct.updateAnaliseTime(current_model.getAn().getTimestamp());
         
-        anct.initTimeList();
-        for (String atime : current_model.getAn().getTempos()){
-            anct.addTimeEntry(atime);
-        }
+        anct.resetDevices();
         
         nocalc = false;  
     }
@@ -434,12 +436,6 @@ public class FX1SMachine extends ActivityMachine {
     
     // ================================================= STATES =================================================================
     
-    @smstate (state = "FX1TEST")
-    public boolean st_fx1test(SMTraffic smm){
-        log.info(String.format("FX1TEST was called from : %s", smm.getPayload().vstring));
-        return true;
-    }
-    
     
     @smstate (state = "NEWANALISE")
     public boolean st_newAnalise(SMTraffic smm){
@@ -517,24 +513,26 @@ public class FX1SMachine extends ActivityMachine {
     }
     
     
+    
     @smstate (state = "UPDATETIME")
     public boolean st_updateTime(SMTraffic smm){
         
-        PropertyLinkDescriptor pld = (PropertyLinkDescriptor)smm.getPayload().vobject;
-        
-        if (pld != null){
-            String mode = pld.getAuxiliar();
-            if (mode != null && mode.equals("STOPENTER")){
-                //log.info("Input Time called called with STOPENTER");
-                anct.addTimeEntry(pld.getFxfield().getValue());
-                current_model.getAn().getTempos().add(pld.getFxfield().getValue());
-            }
-            else{
-                //log.info(String.format("ANATIME called with %s ", pld.isValid() ? "valid":"invalid"));
-            }
+        if (smm.getPayload().getFlag1()){
+            Double average = (Double)smm.getPayload().vobject;
+            Double rsd = (Double)smm.getPayload().getAuxiliar();
+
+            anct.updateField ("it_analiseaverage", String.format(Locale.US, "%4.1f", average), true);
+            anct.updateField ("it_analisersd", String.format(Locale.US, "%5.3f", rsd), true);
         }
+        else{
+            anct.updateField ("it_analiseaverage","", true);
+            anct.updateField ("it_analisersd", "", true);
+        }
+        
         return true;
     }
+    
+    
     
     @smstate (state = "ANALISEDONE")
     public boolean st_analiseDone(SMTraffic smm){

@@ -27,6 +27,10 @@ public class PP200a extends Application{
         
     
         FXFWindowManager.stage = stage;
+        
+//        stage.setFullScreen(false);
+//        stage.setMaximized(false);
+        
         FXFWindowManager wm = FXFWindowManager.getInstance();
         wm.setAppController(ctrl);
         PicnoUtils.appclass = this.getClass();

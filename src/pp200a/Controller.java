@@ -6,6 +6,7 @@
 package pp200a;
 
 
+import com.opus.fxsupport.BlaineDevice;
 import com.opus.syssupport.propertylink;
 import com.opus.fxsupport.PropertyLinkDescriptor;
 import com.opus.fxsupport.FXFConfirmationDialog;
@@ -575,6 +576,11 @@ public class Controller implements SignalListener, VirnaServiceProvider, Propert
     // ========================================   STATES  ======================================================================
     // =========================================================================================================================
     
+    @smstate (state = "NULLEVENT")
+    public boolean st_nullEvent(SMTraffic smm){
+        log.info(String.format("NULLEVENT was called"));
+        return true;
+    }
    
     @smstate (state = "RESET")
     public boolean st_reset(SMTraffic smm){
@@ -607,24 +613,11 @@ public class Controller implements SignalListener, VirnaServiceProvider, Propert
                         new VirnaPayload()
                 );
         setAlarm (-1l, -1, alarm_config, 500l, 500l);
-
-//        smqueue.offer(new SMTraffic(0l, 0l, 0, "FX1TEST", this.getClass(),
-//                                   new VirnaPayload()
-//                                           .setString("Called from Controller")
-//        ));
         
-        
-//        loadProfileList();
-//        loadProfile(PicnoUtils.user.getProfile());
-//        logtime = System.currentTimeMillis();
-//        loadLastCalibration();
-        
-//        top.enableTasks(PicnoUtils.user.isMaycalibrate(), 
-//                        PicnoUtils.user.isMay_search());
-        
-        
-        //loadProfile(PicnoUtils.user.getProfile());
-          
+        BlaineDevice bldv = BlaineDevice.getInstance();
+        bldv.setAppController(this);
+        loadStates(BlaineDevice.class, bldv);
+ 
         return true;
     }
     

@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.opus.fxsupport.DateWidget?>
-<?import com.opus.fxsupport.FXFCheckListViewNumber?>
-<?import com.opus.fxsupport.FXFCountdownTimer?>
+<?import com.opus.fxsupport.FXFBlaineDeviceController?>
 <?import com.opus.fxsupport.FXFTextField?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
@@ -87,13 +86,13 @@
                   <Label layoutX="875.0" layoutY="446.0" text="Média :" />
                   <FXFTextField id="01" fx:id="it_analiseaverage" alignment="CENTER" editable="false" layoutX="937.0" layoutY="442.0" prefHeight="30.0" prefWidth="80.0" promptText="segundos..." styleClass="fxf-label-field" text="0">
                      <font>
-                        <Font name="System Bold" size="14.0" />
+                        <Font name="System Bold" size="16.0" />
                      </font>
                   </FXFTextField>
                   <Label layoutX="875.0" layoutY="498.0" text="R. S. D. :" />
                   <FXFTextField id="01" fx:id="it_analisersd" alignment="CENTER" editable="false" layoutX="940.0" layoutY="492.0" prefHeight="30.0" prefWidth="80.0" promptText="segundos..." styleClass="fxf-label-field" text="0">
                      <font>
-                        <Font name="System Bold" size="14.0" />
+                        <Font name="System Bold" size="16.0" />
                      </font>
                   </FXFTextField>
                   <Label layoutX="302.0" layoutY="110.0" text="g / cm³" />
@@ -143,21 +142,11 @@
                   </FXFTextField>
                   <Label layoutX="1040.0" layoutY="497.0" text="\%" />
                   <DateWidget fx:id="date" layoutX="800.0" layoutY="-11.0" />
-                  <FXFCountdownTimer layoutX="944.0" layoutY="152.0" styleClass="fxf-cdtimer" />
-                  <VBox fx:id="leds" alignment="TOP_CENTER" layoutX="795.0" layoutY="163.0" opacity="0.93" prefHeight="160.0" prefWidth="125.0" spacing="5.0">
-                     <children>
-                        <Label alignment="CENTER" prefHeight="24.0" prefWidth="120.0" style="-fx-background-radius: 10; -fx-background-color: darkred;" text="Segurança" textAlignment="CENTER" textFill="#d06262" />
-                        <Label alignment="CENTER" layoutX="13.0" layoutY="10.0" prefHeight="24.0" prefWidth="120.0" style="-fx-background-radius: 10; -fx-background-color: dodgerblue;" text="Carga" textAlignment="CENTER" />
-                        <Label alignment="CENTER" layoutX="13.0" layoutY="50.0" prefHeight="24.0" prefWidth="120.0" style="-fx-background-radius: 10; -fx-background-color: green;" text="Final Análise" textAlignment="CENTER" />
-                        <Label alignment="CENTER" layoutX="13.0" layoutY="90.0" prefHeight="24.0" prefWidth="120.0" style="-fx-background-radius: 10; -fx-background-color: gray;" text="Válvula" textAlignment="CENTER" />
-                        <Label alignment="CENTER" layoutX="13.0" layoutY="112.0" prefHeight="24.0" prefWidth="120.0" style="-fx-background-radius: 10; -fx-background-color: gray;" text="Motor" textAlignment="CENTER" />
-                     </children>
-                  </VBox>
                   <Label layoutX="400.0" layoutY="223.0" prefHeight="18.0" prefWidth="125.0" text="Temp. Calibração :" />
                   <FXFTextField id="01" fx:id="it_caltemperature" alignment="CENTER" focusPosition="6" layoutX="550.0" layoutY="218.0" prefHeight="28.0" prefWidth="120.0" promptText="Em graus" styleClass="fxf-text-field" />
                   <Label layoutX="704.0" layoutY="224.0" text="℃" />
-                  <Label fx:id="sidebar_btrun" alignment="BOTTOM_CENTER" contentDisplay="TOP" focusTraversable="false" graphicTextGap="25.0" layoutX="803.0" layoutY="349.0" onMouseClicked="#btrun_action" prefHeight="80.0" prefWidth="75.0" styleClass="fxf-sidebarbt" text="Executar Medições" textAlignment="CENTER" />
-                  <FXFCheckListViewNumber fx:id="checklist1" layoutX="883.0" layoutY="335.0" prefHeight="92.0" prefWidth="183.0" />
+                  <FXFBlaineDeviceController fx:id="blainedevice" layoutX="820.0" layoutY="168.0" />
+                  
                </children>
             </AnchorPane>
          </children>
