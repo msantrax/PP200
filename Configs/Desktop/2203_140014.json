@@ -19,30 +19,12 @@
       "buttonlabelcolor": "black"
     },
     {
-      "appclass": "FX1Controller",
-      "configid": "1663962068835084893",
-      "argument": "analise_yara:default",
-      "iconlabel": "Nova Analise Yara",
-      "iconpath": "/home/acp/PP200/Resources/Images/Service_support.jpg",
-      "buttonbkgcolor": "brown",
-      "buttonlabelcolor": "yellow"
-    },
-    {
       "appclass": "FX2Controller",
       "configid": "1663962122551649718",
       "argument": "calib_blaine:default",
-      "iconlabel": "Nova Calibração Blaine",
+      "iconlabel": "Nova Calibração Blaine II",
       "iconpath": "resources/settings_canvas.png",
       "buttonbkgcolor": "dodgerblue",
-      "buttonlabelcolor": "white"
-    },
-    {
-      "appclass": "FX1Controller",
-      "configid": "1662461162999155513",
-      "argument": "analise_blaine:CP32",
-      "iconlabel": "Nova Analise Blaine",
-      "iconpath": "/home/acp/PP200/Resources/Images/research-icon11.jpg",
-      "buttonbkgcolor": "seagreen",
       "buttonlabelcolor": "white"
     },
     {
@@ -53,6 +35,24 @@
       "iconpath": "/home/acp/PP200/Resources/Imagethumbs/saas.png",
       "buttonbkgcolor": "seagreen",
       "buttonlabelcolor": "white"
+    },
+    {
+      "appclass": "FX1Controller",
+      "configid": "1667406741012353755",
+      "argument": "analise_blaine:CP40",
+      "iconlabel": "Nova Analise Blaine",
+      "iconpath": "/home/acp/PP200/Resources/Images/research-icon11.jpg",
+      "buttonbkgcolor": "seagreen",
+      "buttonlabelcolor": "white"
+    },
+    {
+      "appclass": "FX5Controller",
+      "configid": "1667406908680985210",
+      "argument": "analise_yara:default",
+      "iconlabel": "Nova Analise Yara",
+      "iconpath": "/home/acp/PP200/Resources/Images/Service_support.jpg",
+      "buttonbkgcolor": "brown",
+      "buttonlabelcolor": "yellow"
     }
   ],
   "gridposition": "CENTER",

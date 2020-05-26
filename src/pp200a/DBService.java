@@ -537,8 +537,9 @@ public class DBService implements VirnaServiceProvider {
         if (uid == null){
             uid = Long.parseLong(payload.vstring);    
         }
-        
-        VirnaServiceProvider vsp = payload.getCaller();
+     
+        VirnaServiceProvider vsp = (VirnaServiceProvider)payload.getCaller();
+    
         try {
             Boolean hasrecord = locateRecord(uid);
             if (vsp != null){
@@ -552,29 +553,30 @@ public class DBService implements VirnaServiceProvider {
                 ));
             }    
         } catch (SQLException ex) {
-            log.warning(String.format("Failed to search for record"));
-            if (vsp != null){
-                String message = "<html>OOPS ! Não foram encontradas <b>analises</b> conf. o critério, provavelmente :"
-                        + "<ul>"
-                        + "<li>Pode haver um erro de digitação na especificação do critério</li>"
-                        + "<li>Os qualificadores de tempo, identificação e tipo podem ser inter excludentes</li>"
-                        + "<li>Realmente não há tais registros, tente um filtro mais abrangente</li>"
-                        + "</ul>"
-                    + "</html>"; 
-                vsp.processSignal(new SMTraffic(0l, 0l, 0, payload.getCallerstate(), this.getClass(),
-                                        new VirnaPayload()
-                                        .setString("Falha no acesso ao banco de dados&"+ message)
-                                        .setFlag2(true)
-                                        .setObject(payload.vobject)        
-                                        .setCaller(this)
-                                        .setCallerstate("HASRECORD")
-                ));
-            }
+            log.warning(String.format("Failed to search for record %d -> %s", uid, ex.getMessage()));
+           
+            ctrl.processSignal(new SMTraffic(0l, 0l, 0, "ADD_NOTIFICATION", this.getClass(),
+                    new VirnaPayload().setString(
+                                "Gerente de Dados&" + "SEVERE&" +
+                                String.format("Houve uma falha durante a confirmação do registro: %d&", uid) +
+                                String.format("Erro SQL : %s", ex.getMessage())
+            )));
+            
+            vsp.processSignal(new SMTraffic(0l, 0l, 0, payload.getCallerstate(), this.getClass(),
+                                    new VirnaPayload()
+                                    .setFlag2(true)
+                                    .setObject(payload.vobject)        
+                                    .setCaller(this)
+                                    .setCallerstate("HASRECORD")
+            ));
         }
-        
         
         return true;
     }
+    
+    
+    
+    
     
     @smstate (state = "LOADANALISE")
     public boolean st_loadAnalise(SMTraffic smm){
@@ -611,7 +613,7 @@ public class DBService implements VirnaServiceProvider {
          
         VirnaPayload payload = smm.getPayload();
         AnaliseDescriptor ad = (AnaliseDescriptor)payload.vobject;
-        VirnaServiceProvider vsp = payload.getCaller();
+        VirnaServiceProvider vsp = (VirnaServiceProvider)payload.getCaller();
         
         try {
             deleteAnalise(ad);
@@ -686,12 +688,7 @@ public class DBService implements VirnaServiceProvider {
       
         return true;
     }
-    
-    
-    
-    
-    
-    
+   
 }
 
 

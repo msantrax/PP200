@@ -22,9 +22,9 @@ import java.util.logging.Logger;
  *
  * @author opus
  */
-public class AnaliseDescriptor {
+public class YaraDescriptor {
 
-    private static final Logger log = Logger.getLogger(AnaliseDescriptor.class.getName());
+    private static final Logger log = Logger.getLogger(YaraDescriptor.class.getName());
 
     
     //======================================= PROPERTIES =======================================================================
@@ -98,20 +98,20 @@ public class AnaliseDescriptor {
     
     // ======================================= Sample Mass calc ================================================================
     
-        private String porosidade;
+        private String altura;
 
-    public static final String PROP_POROSIDADE = "porosidade";
+    public static final String PROP_ALTURA = "altura";
 
-    @propertyfieldmap (propname = PROP_POROSIDADE)
-    public String getPorosidade() {
-        return porosidade;
+    @propertyfieldmap (propname = PROP_ALTURA)
+    public String getAltura() {
+        return altura;
     }
 
-    @propertylink (propname= PROP_POROSIDADE, plink = "it_porosidade", input=true, callstate="CALCMASS")
-    public void setPorosidade(String porosidade) {
-        String oldPorosidade = this.porosidade;
-        this.porosidade = porosidade;
-        propertyChangeSupport.firePropertyChange(PROP_POROSIDADE, oldPorosidade, porosidade);
+    @propertylink (propname= PROP_ALTURA, plink = "it_altura", input=true, callstate="CALCYARA")
+    public void setAltura(String altura) {
+        String oldAltura = this.altura;
+        this.altura = altura;
+        propertyChangeSupport.firePropertyChange(PROP_ALTURA, oldAltura, altura);
     }
 
     
@@ -124,7 +124,7 @@ public class AnaliseDescriptor {
         return densidade;
     }
 
-    @propertylink (propname= PROP_DENSIDADE , plink = "it_densidade", input=true, callstate="CALCMASS")
+    @propertylink (propname= PROP_DENSIDADE , plink = "it_densidade", input=true, callstate="CALCYARA")
     public void setDensidade(String densidade) {
         String oldDensidade = this.densidade;
         this.densidade = densidade;
@@ -141,7 +141,7 @@ public class AnaliseDescriptor {
         return massa_ensaio;
     }
 
-    @propertylink (propname = PROP_MASSA_ENSAIO, plink = "it_massa_calculada", input=false, callstate="CALCBLAINE")
+    @propertylink (propname = PROP_MASSA_ENSAIO, plink = "it_massa", input=false, callstate="CALCYARA")
     public void setMassa_ensaio(String massa_ensaio) {
         String oldMassa_ensaio = this.massa_ensaio;
         this.massa_ensaio = massa_ensaio;
@@ -158,7 +158,7 @@ public class AnaliseDescriptor {
         return temperature;
     }
 
-    @propertylink (propname = PROP_TEMPERATURE, plink = "it_temperature", input=true, callstate="CALCBLAINE")
+    @propertylink (propname = PROP_TEMPERATURE, plink = "it_temperature", input=true, callstate="CALCYARA")
     public void setTemperature(String temperature) {
         String oldTemperature = this.temperature;
         this.temperature = temperature;
@@ -168,75 +168,58 @@ public class AnaliseDescriptor {
     
     // ===============================  Calibration data =========================================================================
     
-        private String calibid;
+        private String poros;
 
-    public static final String PROP_CALIBID = "calibid";
+    public static final String PROP_POROS = "poros";
 
-    @propertyfieldmap (propname = PROP_CALIBID)
-    public String getCalibid() {
-        return calibid;
+    
+    @propertyfieldmap (propname = PROP_POROS)
+    public String getPoros() {
+        return poros;
     }
 
-    @propertylink (propname = PROP_CALIBID, plink = "it_calibfile", input=false, callstate="NONE")
-    public void setCalibid(String calibid) { 
-        String oldCalibid = this.calibid;
-        this.calibid = calibid;
-        propertyChangeSupport.firePropertyChange(PROP_CALIBID, oldCalibid, calibid);
+    @propertylink (propname = PROP_POROS, plink = "it_poros", input=false, callstate="NONE")
+    public void setPoros(String poros) {
+        String oldPoros = this.poros;
+        this.poros = poros;
+        propertyChangeSupport.firePropertyChange(PROP_POROS, oldPoros, poros);
     }
 
     
-        private String kfactor;
-
-    public static final String PROP_KFACTOR = "kfactor";
-
     
-    @propertyfieldmap (propname = PROP_KFACTOR)
-    public String getKfactor() {
-        return kfactor;
+        private String ssa;
+    
+    public static final String PROP_SSA = "ssa";
+
+    @propertyfieldmap (propname = PROP_SSA)
+    public String getSSA() {
+        return ssa;
     }
 
-    @propertylink (propname = PROP_KFACTOR, plink = "it_constantek", input=false, callstate="NONE")
-    public void setKfactor(String kfactor) {
-        String oldKfactor = this.kfactor;
-        this.kfactor = kfactor;
-        propertyChangeSupport.firePropertyChange(PROP_KFACTOR, oldKfactor, kfactor);
+    @propertylink (propname = PROP_SSA, plink = "it_ssa", input=false, callstate="ANALISEYARADONE")
+    public void setSSA(String ssa) {
+        String oldssa = this.ssa;
+        this.ssa = ssa;
+        propertyChangeSupport.firePropertyChange(PROP_SSA, oldssa, ssa);
+    }
+    
+    
+        private String perm;
+
+    public static final String PROP_PERM = "perm";
+    
+    @propertyfieldmap (propname = PROP_PERM)
+    public String getPerm() {
+        return perm;
     }
 
-    
-        private String volume_camada;
-
-    public static final String PROP_VOLUME_CAMADA = "volume_camada";
-    
-    @propertyfieldmap (propname = PROP_VOLUME_CAMADA)
-    public String getVolume_camada() {
-        return volume_camada;
+    @propertylink (propname = PROP_PERM, plink = "it_perm", input=false, callstate="NONE")
+    public void setPerm(String perm) {
+        String oldperm = this.perm;
+        this.perm = perm;
+        propertyChangeSupport.firePropertyChange(PROP_PERM, oldperm, perm);
     }
 
-    @propertylink (propname = PROP_VOLUME_CAMADA, plink = "it_layervolume", input=false, callstate="CALCMASS")
-    public void setVolume_camada(String volume_camada) {
-        String oldVolume_camada = this.volume_camada;
-        this.volume_camada = volume_camada;
-        propertyChangeSupport.firePropertyChange(PROP_VOLUME_CAMADA, oldVolume_camada, volume_camada);
-    }
-
-    
-        private String caltemp;
-
-    public static final String PROP_CALTEMP = "caltemp";
-    
-    @propertyfieldmap (propname = PROP_CALTEMP)
-    public String getCaltemp() {
-        return caltemp;
-    }
-
-    @propertylink (propname = PROP_CALTEMP, plink = "it_caltemp", input=false, callstate="NONE")
-    public void setCaltemp(String caltemp) {
-        String oldcaltemp = this.caltemp;
-        this.caltemp = caltemp;
-        propertyChangeSupport.firePropertyChange(PROP_CALTEMP, oldcaltemp, caltemp);
-    }
-
-    
     
     // ======================================= Analise Time Calc ==============================================================
     
@@ -266,7 +249,7 @@ public class AnaliseDescriptor {
         return media;
     }
 
-    @propertylink (propname = PROP_MEDIA, plink = "it_analiseaverage", input=false, callstate="CALCBLAINE")
+    @propertylink (propname = PROP_MEDIA, plink = "it_analiseaverage", input=false, callstate="NONE")
     public void setMedia(String media) {
         String oldMedia = this.media;
         this.media = media;
@@ -283,7 +266,7 @@ public class AnaliseDescriptor {
         return rsd;
     }
 
-    @propertylink (propname = PROP_RSD, plink = "it_analisersd", input=false, callstate="CALCBLAINE")
+    @propertylink (propname = PROP_RSD, plink = "it_analisersd", input=false, callstate="CALCYARA")
     public void setRsd(String rsd) {
         String oldRsd = this.rsd;
         this.rsd = rsd;
@@ -292,21 +275,6 @@ public class AnaliseDescriptor {
 
     
     
-        private String blaine;
-    
-    public static final String PROP_BLAINE = "blaine";
-
-    @propertyfieldmap (propname = PROP_BLAINE)
-    public String getBlaine() {
-        return blaine;
-    }
-
-    @propertylink (propname = PROP_BLAINE, plink = "it_blaineresult", input=false, callstate="ANALISEDONE")
-    public void setBlaine(String blaine) {
-        String oldBlaine = this.blaine;
-        this.blaine = blaine;
-        propertyChangeSupport.firePropertyChange(PROP_BLAINE, oldBlaine, blaine);
-    }
 
     
     
@@ -365,7 +333,7 @@ public class AnaliseDescriptor {
     // ===================================================================================================================
     
     
-    public AnaliseDescriptor() {
+    public YaraDescriptor() {
         
         loadDefaults();
         mapMethods();
@@ -422,20 +390,15 @@ public class AnaliseDescriptor {
     
     public void loadDefaults(){
         
-        densidade = "2.65";
-        porosidade = "0.50";
-        massa_ensaio = "2.69";
+        densidade = "1.1242";
+        massa_ensaio = "8.6";
+        altura = "2.8";
+        temperature = "23.0";
+        
         
         media = "";
         rsd = "";
-        blaine = "";
        
-        calibid = "NIST-605A:271219231438";
-        kfactor = "2.1602";
-        volume_camada = "1.9106";
-        temperature = "23.0";
-        
-        //timestamp = 1577215164936L;
         
         if (Config.getInstance().isUse_timesavings()){
             timestamp = System.currentTimeMillis() - 3600000L;

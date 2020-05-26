@@ -36,7 +36,7 @@ public class PP200a extends Application{
         PicnoUtils.appclass = this.getClass();
         
         wm.updateCanvasMap();
-        wm.activateWindow("CANVAS");
+        wm.activateWindow("CANVAS", null, true);
   
         LOG.info("========================Operations1 Scene loaded ! ");    
        
@@ -55,9 +55,9 @@ public class PP200a extends Application{
         );
         
         // Yara Analysis Activity
-        ActivitiesMap.registerActivity("analise_yara", new ActivityDescriptor (FX1Controller.class)
-                                                            .setMachineclass(FX1SMachine.class)
-                                                            .setModelclass(FX1Model.class)
+        ActivitiesMap.registerActivity("analise_yara", new ActivityDescriptor (FX5Controller.class)
+                                                            .setMachineclass(FX5SMachine.class)
+                                                            .setModelclass(FX5Model.class)
                                                             .setArgument_prefix("analise_yara")
                                                             .setName("Analises Yara")
                                                             .setLabel("Nova Analise Yara")

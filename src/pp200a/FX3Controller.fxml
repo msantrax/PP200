@@ -46,8 +46,11 @@
                   <Label fx:id="sidebar_csv" alignment="BOTTOM_CENTER" contentDisplay="TOP" focusTraversable="false" graphicTextGap="25.0" layoutX="52.0" layoutY="43.0" onMouseClicked="#csv_action" prefHeight="100.0" styleClass="fxf-sidebarbt" text="Exportar CSV" textAlignment="CENTER" />
                </children>
                <HBox.margin>
-                  <Insets top="50.0" />
+                  <Insets />
                </HBox.margin>
+               <padding>
+                  <Insets top="20.0" />
+               </padding>
             </VBox>
             <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#canvas_clicked" prefHeight="705.0" prefWidth="1105.0" style="-fx-background-color: white;" HBox.hgrow="ALWAYS">
                <children>
@@ -69,7 +72,7 @@
                   <Spinner fx:id="sp_timeto" layoutX="951.0" layoutY="76.0" prefHeight="26.0" prefWidth="102.0" styleClass="fxf-filtertime-field" />
                   <Label layoutX="900.0" layoutY="81.0" text="As :" />
                   <ToggleSwitch fx:id="sw_lote" layoutX="35.0" layoutY="168.0" onMouseClicked="#sw_lote_action" prefHeight="20.0" prefWidth="125.0" text="Lote" />
-                  <TableView fx:id="tb_table" layoutX="28.0" layoutY="229.0" prefHeight="205.0" prefWidth="1033.0" styleClass="fxf-filtertime-field" />
+                  <TableView fx:id="tb_table" layoutX="28.0" layoutY="229.0" prefHeight="205.0" prefWidth="1100.0" styleClass="fxf-filtertime-field" />
                   <ChoiceBox fx:id="cb_sid" layoutX="188.0" layoutY="119.0" prefHeight="26.0" prefWidth="188.0" styleClass="fxf-filtertime-field" />
                   <Label layoutX="711.0" layoutY="170.0" text="Campo Auxiliar :" />
                   <ChoiceBox fx:id="cb_auxiliar" layoutX="838.0" layoutY="165.0" prefHeight="26.0" prefWidth="217.0" styleClass="fxf-filtertime-field" />

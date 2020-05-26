@@ -24,6 +24,7 @@ import com.opus.syssupport.smstate;
 import java.awt.Color;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -43,6 +44,8 @@ import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.Control;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
+import org.mariuszgromada.math.mxparser.Argument;
+import org.mariuszgromada.math.mxparser.Expression;
 
 
 public class Controller implements SignalListener, VirnaServiceProvider, PropertyChangeListener {
@@ -57,10 +60,18 @@ public class Controller implements SignalListener, VirnaServiceProvider, Propert
     private FX1Controller anct;
     private boolean fx1open = false;
     
+    private FX2Controller calct;
+    private boolean fx2open = false;
+    
+    private FX5Controller yaract;
+    private boolean fx5open = false;
+    
+    
     private FX3Controller dbct;
     private boolean fx3open = false;
     
-    private DBService dbservice;
+    
+    protected DBService dbservice;
 
     private boolean locked = false;
     
@@ -86,6 +97,10 @@ public class Controller implements SignalListener, VirnaServiceProvider, Propert
         
         log.setLevel(Level.FINE);
         instance = this;
+    }
+
+    public DBService getDbservice() {
+        return dbservice;
     }
    
     
@@ -282,21 +297,38 @@ public class Controller implements SignalListener, VirnaServiceProvider, Propert
  
     // ===================================================== Controllers ===================================================
  
+    
     public void setFXANController (FX1Controller controller){
         this.anct = controller;   
-        //mapProperties(an, true);
     }
-    
     public boolean isFX1open() { return fx1open;}
     public void setFX1open (boolean open) { fx1open = open;}
 
+    public void setFXCALController (FX2Controller controller){
+        this.calct = controller;   
+    }
+    public boolean isFX2open() { return fx2open;}
+    public void setFX2open (boolean open) { fx2open = open;}
+    
+    
+    public void setFXYARAController (FX5Controller controller){
+        this.yaract = controller;   
+    }
+    public boolean isFX5open() { return fx1open;}
+    public void setFX5open (boolean open) { fx1open = open;}
+    
+    
+    
     public void setFXDBController (FX3Controller controller){
         this.dbct = controller;
     }
     
     
-    public LinkedBlockingQueue<SMTraffic> getQueue(){ return smqueue;}
     
+    
+    
+    
+    public LinkedBlockingQueue<SMTraffic> getQueue(){ return smqueue;}
     
     
     public void updateUIWidget (String key, FXFField field, boolean analise){
@@ -548,7 +580,7 @@ public class Controller implements SignalListener, VirnaServiceProvider, Propert
                 }
             } catch (Exception ex) {
                 log.log(Level.SEVERE,String.format("Controller State Machine failed with %s @ state %s", ex.getMessage(), state));
-                
+                //log.log(Level.SEVERE, "Falha na maquina de estados : ", ex);
 //                ImageIcon image = ImageUtilities.loadImageIcon("com/opus/pp100/db-schema-icon.png", true);
 //                Notification noti = NotificationDisplayer.getDefault().notify(
 //                    "Kernel Controlador da Virna 3 detectou anormalidade",
@@ -575,6 +607,98 @@ public class Controller implements SignalListener, VirnaServiceProvider, Propert
     // =========================================================================================================================
     // ========================================   STATES  ======================================================================
     // =========================================================================================================================
+    
+    
+    private LinkedHashMap<String,Argument> args = new LinkedHashMap<>();
+    private ArrayList<String> formulas = new ArrayList<>();
+    
+    private boolean createArgument (String line){
+        
+        String[] tokens = line.split("=");
+        if (tokens.length != 2) return false;
+        String argname = tokens[0].trim();
+        String form = tokens[1].trim();
+        
+        
+        Expression ex = new Expression (form);
+        //log.info(String.format("Eval ex [%s] : %s", argname, form));
+        for (String sarg : args.keySet()){
+            //log.info(String.format("\t looking if [%s] has : %s", argname, sarg));
+            if (form.contains(sarg)){
+                //log.info(String.format("\t\tFound %s on ex", sarg));
+                ex.addArguments(args.get(sarg));
+            }
+        }
+        
+        
+        Double d = ex.calculate();
+        if (d.isNaN()) {
+            smqueue.offer(new SMTraffic(0l, 0l, 0, "ADD_NOTIFICATION", this.getClass(),
+                    new VirnaPayload().setString(
+                                "Servidor do nucleo de calculos&" + "SEVERE&" +
+                                String.format("Erro de sintaxe na formula que calcula o parametro : %s&", argname) +
+                                ex.getErrorMessage().substring(0, 180)
+            )));
+            
+            log.info(String.format("\t Failed to evaluate [%s] due %s", argname, ex.getErrorMessage().substring(0, 180)));
+            return false;
+        }
+//        else{
+//            log.info(String.format("\t----[%s] evaluated to %f", argname,  d));
+//        }
+        Argument arg = new Argument(argname, d);
+        
+        args.put(argname, arg);
+        
+        return true;
+    }
+    
+    
+    @smstate (state = "TESTCALC")
+    public boolean st_testCalc(SMTraffic smm){
+        
+        
+        try {
+            ArrayList <String>formula = (PicnoUtils.loadAuxJson("form_2505_123854.json", ArrayList.class));
+            
+            args.put("altura", new Argument("altura", 2.8));
+            args.put("densidade", new Argument("densidade", 1.1242));
+            args.put("temperatura", new Argument("temperatura", 25));
+            args.put("peso", new Argument("peso", 8.6));
+            args.put("escoamento", new Argument("escoamento", 10.13));
+            
+//            formulas.add("#Formulas de calculo analise Yara");
+//            formulas.add("P2 = 0.999 -(0.099 * (peso/altura))");
+//            formulas.add("VARB = densidade * escoamento * P2^3");
+//            formulas.add("U = 0.000001752 * (temperatura+273.15) + 0.103434989/(temperatura+273.15) - 0.000687763");
+//            formulas.add("VARC = 0.89 * altura * (1-P2)*(1-P2) * U");
+//            formulas.add("VARF = VARB/VARC");
+//            formulas.add("perm = 87 * (altura/escoamento)");
+//            formulas.add("poros = 0.999 -(0.099 * (peso/altura))");
+//            formulas.add("ssa = 59.661 + (7.52 * VARF^0.5)");
+            
+            for (String form : formula){
+                if (form.startsWith("#") || form.trim().isEmpty()) continue;
+                if (!createArgument(form)){
+                    log.info("Formula Sintaxe Error...");
+                    break;
+                }
+            }
+            
+            log.info("Formulas were parsed ...");
+            
+            
+        } catch (IOException ex) {
+            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
+        
+        return true;
+    }
+    
+    
+    
+    
     
     @smstate (state = "NULLEVENT")
     public boolean st_nullEvent(SMTraffic smm){
@@ -605,7 +729,9 @@ public class Controller implements SignalListener, VirnaServiceProvider, Propert
         System.setProperty("sun.java2d.cmm", "sun.java2d.cmm.kcms.KcmsServiceProvider");
         
         dbservice = DBService.getInstance();
-        dbservice.setControler(this);
+        getDbservice().setControler(this);
+        getDbservice().startService();
+        
         
         FXFWindowManager wm = FXFWindowManager.getInstance();
      
@@ -766,6 +892,22 @@ public class Controller implements SignalListener, VirnaServiceProvider, Propert
     }
     
     
+    @smstate (state = "TEST1_ACTION")
+    public boolean st_test1Action(SMTraffic smm){
+        
+        FXFWindowManager wm = FXFWindowManager.getInstance();
+        try {
+            wm.test1();
+        } catch (Exception ex) {
+            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        
+        
+        return true;
+    }
+    
+    
     
     
     @smstate (state = "NAV_ACTION")
@@ -781,14 +923,15 @@ public class Controller implements SignalListener, VirnaServiceProvider, Propert
             public void run() {
               try {
                   if (cmd.equals("Back")){
-                      wm.activateWindow("FX4");
+                      //wm.activateWindow("FX4", null, true);
+                      wm.cycleActivity();
                   }
                   else if (cmd.equals("List")){
-                      System.exit(0);
-                      //wm.activateWindow("FX3");
+                      //System.exit(0);
+                      wm.showActivityList();
                   }
                   else{
-                      wm.activateWindow("CANVAS");
+                      wm.activateWindow("CANVAS", null, true);
                   }
               } catch (Exception ex) {
                   Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, "Failed to load window due : ", ex.getMessage());
@@ -827,8 +970,7 @@ public class Controller implements SignalListener, VirnaServiceProvider, Propert
         String mes = payload.vstring;
         
         String[] tokens = mes.split("&");
-        
-        
+ 
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
@@ -862,7 +1004,7 @@ public class Controller implements SignalListener, VirnaServiceProvider, Propert
     public boolean st_showOops(SMTraffic smm){
         
         VirnaPayload payload = smm.getPayload();
-        VirnaServiceProvider vsp = payload.getCaller();
+        VirnaServiceProvider vsp = (VirnaServiceProvider)payload.getCaller();
         
         
         if (false){

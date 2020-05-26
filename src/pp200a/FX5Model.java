@@ -15,11 +15,11 @@ import java.util.logging.Logger;
  *
  * @author opus
  */
-public class FX1Model extends ActivityModel{
+public class FX5Model extends ActivityModel{
 
-    private static final Logger LOG = Logger.getLogger(FX1Model.class.getName());
+    private static final Logger LOG = Logger.getLogger(FX5Model.class.getName());
 
-    private AnaliseDescriptor an;
+    private YaraDescriptor an;
     private boolean anclean = true;
     
     private CalibDescriptor cal;
@@ -27,21 +27,21 @@ public class FX1Model extends ActivityModel{
     private boolean calibclean = true;
     
     
-    public FX1Model() {
+    public FX5Model() {
         proplink_uimap = new LinkedHashMap<>();
         proplink_modelmap = new LinkedHashMap<>();
-        an = new AnaliseDescriptor();
+        an = new YaraDescriptor();
         
     }
 
     
     // ======================================= GET SET ===============================================================
     
-    public AnaliseDescriptor getAn() {
+    public YaraDescriptor getAn() {
         return an;
     }
 
-    public void setAn(AnaliseDescriptor an) {
+    public void setAn(YaraDescriptor an) {
         this.an = an;
     }
 

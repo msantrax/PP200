@@ -149,6 +149,22 @@ public class CalibDescriptor {
     }
 
 
+        private ArrayList<String> tempos;
+
+    public static final String PROP_TEMPOS = "tempos";
+
+    @propertyfieldmap (propname = PROP_TEMPOS)
+    public ArrayList<String> getTempos() {
+        return tempos;
+    }
+
+    
+    public void setTempos(ArrayList<String> tempos) {
+        ArrayList<String> oldTempos = this.tempos;
+        this.tempos = tempos;
+        propertyChangeSupport.firePropertyChange(PROP_TEMPOS, oldTempos, tempos);
+    }
+
 
 
     // ======================================= KFactor calc ================================================================
@@ -163,7 +179,7 @@ public class CalibDescriptor {
         return kfactor;
     }
 
-    @propertylink (propname = PROP_KFACTOR, plink = "it_constantek", input=false, callstate="CALIBDONE")
+    @propertylink (propname = PROP_KFACTOR, plink = "it_kfactor", input=false, callstate="CALIBRATIONDONE")
     public void setKfactor(String kfactor) {
         String oldKfactor = this.kfactor;
         this.kfactor = kfactor;
@@ -230,23 +246,6 @@ public class CalibDescriptor {
     
     
     // ======================================= Calib Time Calc ==============================================================
-    
-        private ArrayList<String> tempos;
-
-    public static final String PROP_TEMPOS = "tempos";
-
-    @propertyfieldmap (propname = PROP_TEMPOS)
-    public ArrayList<String> getTempos() {
-        return tempos;
-    }
-
-    
-    public void setTempos(ArrayList<String> tempos) {
-        ArrayList<String> oldTempos = this.tempos;
-        this.tempos = tempos;
-        propertyChangeSupport.firePropertyChange(PROP_TEMPOS, oldTempos, tempos);
-    }
-
     
         private String media;
 

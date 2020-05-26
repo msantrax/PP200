@@ -129,8 +129,8 @@ public class FX4Controller extends FXFController implements com.opus.fxsupport.F
         
         final WebEngine eng = view.getEngine();
         final Label warningLabel = new Label("Do you need to specify web proxy information?");
-        eng.load("http://google.com");
-
+        //eng.load("http://google.com");
+        eng.load("http://acpinstruments.com.br");
         
         ChangeListener handler = new ChangeListener<Number>() {
             @Override public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
@@ -141,7 +141,8 @@ public class FX4Controller extends FXFController implements com.opus.fxsupport.F
         };
         eng.getLoadWorker().progressProperty().addListener(handler);
 
-        final TextField locationField = new TextField("http://google.com");
+        //final TextField locationField = new TextField("http://localhost:8080/HTML_BS4");
+        final TextField locationField = new TextField("http://acpinstruments.com.br");
         locationField.setMaxHeight(Double.MAX_VALUE);
         Button goButton = new Button("Go");
         goButton.setDefaultButton(true);

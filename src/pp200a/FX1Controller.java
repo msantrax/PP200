@@ -7,7 +7,6 @@ package pp200a;
 
 
 import com.opus.fxsupport.BlaineDevice;
-import com.opus.fxsupport.BlaineFieldDescriptor;
 import com.opus.fxsupport.SystemMenu;
 import com.opus.fxsupport.DateWidget;
 import com.opus.fxsupport.PropertyLinkDescriptor;
@@ -20,6 +19,7 @@ import com.opus.fxsupport.FXFBlaineDeviceController;
 import com.opus.fxsupport.FXFCheckListViewNumber;
 import com.opus.fxsupport.FXFController;
 import com.opus.fxsupport.FXFCountdownTimer;
+import com.opus.fxsupport.LauncherItem;
 import com.opus.fxsupport.WidgetDescriptor;
 import com.opus.fxsupport.VoidValidator;
 import com.opus.glyphs.FontAwesomeIcon;
@@ -36,9 +36,11 @@ import java.util.LinkedHashMap;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import javafx.collections.ObservableMap;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Control;
@@ -46,6 +48,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.shape.Line;
 
 
 import org.controlsfx.validation.Severity;
@@ -65,8 +68,6 @@ public class FX1Controller extends FXFController implements com.opus.fxsupport.F
     private Controller appctrl = Controller.getInstance();
     private FX1SMachine machine;
     private FX1Model model;
-    
-    
     
     
     @FXML
@@ -114,7 +115,6 @@ public class FX1Controller extends FXFController implements com.opus.fxsupport.F
     @FXML
     private FXFTextField it_analisetime;
 
-    
 
     @FXML
     private FXFTextField it_analiseaverage;
@@ -146,6 +146,10 @@ public class FX1Controller extends FXFController implements com.opus.fxsupport.F
     private FXFTextField it_temperature;
 
     @FXML
+    private FXFTextField it_caltemp;
+    
+    
+    @FXML
     private DateWidget date;
 
     @FXML
@@ -153,13 +157,11 @@ public class FX1Controller extends FXFController implements com.opus.fxsupport.F
 
     
     public FX1Controller(FXMLLoader fxmlLoader) {
-        //wdgmanager = FXFWidgetManager.getInstance();
         this.fxmlLoader = fxmlLoader; 
     }
     
     
     public FX1Controller(FXMLLoader fxmlLoader, String profilepath) {
-        //wdgmanager = FXFWidgetManager.getInstance();
         this.fxmlLoader = fxmlLoader; 
         this.profilepath = profilepath;
     }
@@ -170,6 +172,7 @@ public class FX1Controller extends FXFController implements com.opus.fxsupport.F
     @Override
     public void setAppController (VirnaServiceProvider ctrl){
         this.ctrl = ctrl;
+        FXFController.sctrl = ctrl;
         model.setAppCtrl(ctrl);
         machine.setAppController(ctrl);
         blainedevice.setAppController(ctrl);
@@ -196,6 +199,7 @@ public class FX1Controller extends FXFController implements com.opus.fxsupport.F
         model.setMachine(machine);
         model.setAppCtrl(appctrl);
         model.setFXCtrl(this);
+        
             
         machine.setAppController(appctrl);
         machine.addModel(profile.getArgument(), model);
@@ -206,12 +210,20 @@ public class FX1Controller extends FXFController implements com.opus.fxsupport.F
         
         addContext(fxmlLoader.getNamespace());
         
-        appctrl.processSignal(new SMTraffic(0l, 0l, 0, "NEWANALISE", this.getClass(),
-                                   new VirnaPayload()
-        ));
-        
+        machine.newAnalise();
+ 
     }
     
+    @Override
+    public void setLauncher(LauncherItem li){
+        profile.setLauncher(li);
+        launcher = li;
+    }
+    
+    @Override
+    public LauncherItem getLauncher(){
+        return launcher;
+    }
     
     @Override
     public FXFCountdownTimer getCDT() {
@@ -224,12 +236,26 @@ public class FX1Controller extends FXFController implements com.opus.fxsupport.F
     }
     
     @Override
+    public FXFBlaineDeviceController getBlaineDevice(){
+        return blainedevice;
+    }
+    
+    
+    @Override
     public void resetDevices() {
-//        appctrl.processSignal(new SMTraffic(0l, 0l, 0, "RESETBLAINE", this.getClass(),
-//                                   new VirnaPayload().setObject(this)
-//        ));
-        
-        blainedevice.getRunControl().initTimeList();
+        blainedevice.initAnalises();
+    }
+    
+    
+    // =============================================== MENU SERVICES =======================================================
+    
+    private void drawSystemMenuSeparator(SystemMenu menupane, Double ypos){
+        Line sep = new Line();
+        sep.setEndX(100.0);
+        sep.setStartX(-100.0);
+        menupane.setTopAnchor(sep, ypos);
+        menupane.setLeftAnchor(sep, 0.0);
+        menupane.getChildren().add(sep);
         
     }
     
@@ -239,16 +265,54 @@ public class FX1Controller extends FXFController implements com.opus.fxsupport.F
         
         SystemMenu menupane = new SystemMenu();
         
-        Label shutdown = new Label("Shutdown");
-
-        menupane.setTopAnchor(shutdown, 20.0);
-        menupane.setRightAnchor(shutdown, 20.0);
-        menupane.getChildren().add(shutdown);
+        drawSystemMenuSeparator (menupane, 0.0);
         
+        
+        Label bt_clone = new Label("Clonar esse perfil ...");
+//        bt_logout.setGraphicTextGap(15.0);
+//        bt_logout.setGraphic(GlyphsBuilder.getAwesomeGlyph(FontAwesomeIcon.POWER_OFF, "black", 2));
+        bt_clone.getStyleClass().add("fxf-shutdownbutton");
+        
+        bt_clone.setOnMouseClicked(new EventHandler<MouseEvent>(){
+            @Override 
+            public void handle(MouseEvent event) {
+                    appctrl.processSignal(new SMTraffic(0l, 0l, 0, "CLONEPROFILE", this.getClass(),
+                                   new VirnaPayload().setFlag1(true)
+                    ));
+            } 
+        });
+        menupane.setTopAnchor(bt_clone, 15.0);
+        menupane.setLeftAnchor(bt_clone, 25.0);
+        menupane.getChildren().add(bt_clone);
+        
+        
+        
+        
+        Label bt_delete= new Label("Apagar esse perfil");
+//        bt_logout.setGraphicTextGap(15.0);
+//        bt_logout.setGraphic(GlyphsBuilder.getAwesomeGlyph(FontAwesomeIcon.POWER_OFF, "black", 2));
+        bt_delete.getStyleClass().add("fxf-shutdownbutton");
+        
+        bt_delete.setOnMouseClicked(new EventHandler<MouseEvent>(){
+            @Override 
+            public void handle(MouseEvent event) {
+                appctrl.processSignal(new SMTraffic(0l, 0l, 0, "DELETEPROFILE", this.getClass(),
+                                   new VirnaPayload().setFlag1(true)
+                    ));
+            } 
+        });
+        
+        menupane.setTopAnchor(bt_delete, 45.0);
+        menupane.setLeftAnchor(bt_delete, 25.0);
+        menupane.getChildren().add(bt_delete);
+
         return menupane;
     }
     
     
+    
+    
+    // =========================================================
     
     public void updateAnaliseTime (long timestamp) {
         
@@ -261,10 +325,39 @@ public class FX1Controller extends FXFController implements com.opus.fxsupport.F
     }
     
     
+    @Override
+    public void addContext (ObservableMap<String, Object> namespace){
+        
+        super.addContext(namespace);
+        
+        namespace.forEach((name, obj) -> {
+            if (obj != null){
+                if (obj instanceof FXFBlaineDeviceController){   
+                    WidgetDescriptor wd;
+                    int focus = 0;
+                    focus = getNextOutFocusCounter();
+                    ((Node) obj).setFocusTraversable(false);
+                    FXFBlaineDeviceController field = (FXFBlaineDeviceController)obj;
+                    wd = new WidgetDescriptor(focus, field);
+                    wd.enter_focusable = false;
+                    wd.name = name;
+                    String fname = name;
+                    field.setManagement(this, focus, wctx);
+                    wctx.getWidgetList().put(focus, wd);
+                    
+                    LOG.info(String.format("FX1 registering Key: %s of type=%s", name, obj.toString()));
+                }
+           }
+        });
+    }
+    
+    
+    
     public void updateField (String fieldname, String value, boolean required){
         
-        FXFField field = getWidget(fieldname);
+        FXFField field = getWidget(fieldname, FXFField.class);
         WidgetDescriptor wd = wctx.findByName(fieldname);
+        
         if (field != null){
             field.updateValue(value, wd.required);
             //LOG.info(String.format("Updating %s with %s / required = %s", fieldname, value, required));
@@ -278,10 +371,10 @@ public class FX1Controller extends FXFController implements com.opus.fxsupport.F
         
         PropertyLinkDescriptor pld1, pld2;
         
-        pld1 = model.getAna_proplink_uimap().get(key);
+        pld1 = model.getProplink_uimap().get(key);
         if (pld1 != null){
             pld1.setFxfield(field);
-            pld2 = model.getAna_proplink_modelmap().get(key);
+            pld2 = model.getProplink_modelmap().get(key);
             if (pld2 != null){
                 pld2.setFxfield(field);
             }
@@ -291,13 +384,13 @@ public class FX1Controller extends FXFController implements com.opus.fxsupport.F
     public void initValidators (FXFField field, FXFFieldDescriptor fxfd){
         
         
-        Control fxctrl = (Control)fxfd.getField();
+        Control fxctrl = (Control)fxfd.getField(FXFField.class);
         fxctrl.setTooltip(new Tooltip(fxfd.getTooltip_message()));
         
         // Create Number Validator if needed
         if (fxfd.getValidator_type().equals("number")){
             NumberValidator nv = new NumberValidator();
-            validators.put(fxfd.getField(), nv);
+            validators.put(fxfd.getField(FXFField.class), nv);
             
             nv.setMaybenull(fxfd.isMaybenull());
             ValidationSupport.setRequired(fxctrl, fxfd.isRequired());
@@ -311,7 +404,7 @@ public class FX1Controller extends FXFController implements com.opus.fxsupport.F
                 }
             } 
             fxfd.setValidator(nv);
-            validators.get(fxfd.getField()).initTooltip(fxctrl.getTooltip());
+            validators.get(fxfd.getField(FXFField.class)).initTooltip(fxctrl.getTooltip());
            
             
             vs.registerValidator(fxctrl, new Validator<String>(){
@@ -335,8 +428,8 @@ public class FX1Controller extends FXFController implements com.opus.fxsupport.F
         
         else if (fxfd.getValidator_type().contains("notempty")){
             EmptyValidator ev = new EmptyValidator();
-            validators.put(fxfd.getField(), ev);
-            validators.get(fxfd.getField()).initTooltip(fxctrl.getTooltip());
+            validators.put(fxfd.getField(FXFField.class), ev);
+            validators.get(fxfd.getField(FXFField.class)).initTooltip(fxctrl.getTooltip());
             ValidationSupport.setRequired(fxctrl, fxfd.isRequired());
             
             vs.registerValidator(fxctrl, new Validator<String>(){
@@ -360,8 +453,8 @@ public class FX1Controller extends FXFController implements com.opus.fxsupport.F
         
         else if (fxfd.getValidator_type().equals("void")){
             VoidValidator vv = new VoidValidator();
-            validators.put(fxfd.getField(), vv);
-            validators.get(fxfd.getField()).initTooltip(fxctrl.getTooltip());
+            validators.put(fxfd.getField(FXFField.class), vv);
+            validators.get(fxfd.getField(FXFField.class)).initTooltip(fxctrl.getTooltip());
             ValidationSupport.setRequired(fxctrl, fxfd.isRequired());
             
             vs.registerValidator(fxctrl, new Validator<String>(){
@@ -388,11 +481,11 @@ public class FX1Controller extends FXFController implements com.opus.fxsupport.F
       
         
         fxfd.setField(field);
-        Control fxctrl = (Control)fxfd.getField();
+        Control fxctrl = fxfd.getField(Control.class);
         
         fxctrl.setTooltip(new Tooltip(fxfd.getTooltip_message()));
 
-        updateUIWidget(fxfd.getName(), fxfd.getField());
+        updateUIWidget(fxfd.getName(), fxfd.getField(FXFField.class));
         
         field.setSid(fxfd.getName());
         
@@ -409,37 +502,31 @@ public class FX1Controller extends FXFController implements com.opus.fxsupport.F
             }
         });  
         
-        String custom_classtype = fxfd.getCustom_classtype();
-        if (custom_classtype != null && !custom_classtype.isEmpty()){
-            if (fxfd.getCustom() == null){
-                fxfd.setCustom(new BlaineFieldDescriptor());
-            }
-        }
-        else{
-            initValidators (field, fxfd);
         
-            FXFController.updateAutocomplete(fxfd, null);
-            
-            String localcallback = fxfd.getLocal_callback();
-            if (!localcallback.equals("")){
-                PropertyLinkDescriptor linkdesc;
-                linkdesc = new PropertyLinkDescriptor()
-                                                    .setFxfield(field)
-                                                    .setInput(true)
-                                                    .setStopfocus(true)
-                                                    .setPlink(fxfd.getName())
-                                                    .setCallstate(localcallback);
-                model.getAna_proplink_uimap().put(fxfd.getName(), linkdesc);
-                LOG.info(String.format("Added local field %s", fxfd.getName()));
-            }
+        initValidators(field, fxfd);
 
-            WidgetDescriptor wd = getWidgetDescriptor(fxfd.getName());
-            wd.required = fxfd.isRequired();
-            PropertyLinkDescriptor pld3 = model.getAna_proplink_uimap().get(fxfd.getName());
-            if (wd != null && pld3 != null){
-                wd.linkdescriptor = pld3;
-            }
+        FXFController.updateAutocomplete(fxfd, null);
+
+        String localcallback = fxfd.getLocal_callback();
+        if (!localcallback.equals("")){
+            PropertyLinkDescriptor linkdesc;
+            linkdesc = new PropertyLinkDescriptor()
+                                                .setFxfield(field)
+                                                .setInput(true)
+                                                .setStopfocus(true)
+                                                .setPlink(fxfd.getName())
+                                                .setCallstate(localcallback);
+            model.getProplink_uimap().put(fxfd.getName(), linkdesc);
+            LOG.info(String.format("Added local field %s", fxfd.getName()));
         }
+
+        WidgetDescriptor wd = getWidgetDescriptor(fxfd.getName());
+        wd.required = fxfd.isRequired();
+        PropertyLinkDescriptor pld3 = model.getProplink_uimap().get(fxfd.getName());
+        if (wd != null && pld3 != null){
+            wd.linkdescriptor = pld3;
+        }
+        
              
     }
     
@@ -456,15 +543,13 @@ public class FX1Controller extends FXFController implements com.opus.fxsupport.F
     
     @Override
     public void update() {
-        update(scene);
+        update(getScene());
     }
     
     @Override
     public void update(Scene scene){
-        
-        FXFField field;
-        
-        this.scene = scene;
+      
+        this.setScene(scene);
         vs = new ValidationSupport(); 
         validators = new LinkedHashMap<>();
         
@@ -476,50 +561,99 @@ public class FX1Controller extends FXFController implements com.opus.fxsupport.F
         ArrayList<FXFFieldDescriptor> descriptors = profile.getDescriptors();
          
         for (FXFFieldDescriptor fxfd : descriptors){
-            
-            field = getWidget(fxfd.getName());
-            if (field !=null){
-                LOG.info(String.format("Profile load said field %s was updated", fxfd.getName()));
-                initField(field, fxfd);
+            if (fxfd.getName().equals("blainedevice")){
+                FXFBlaineDeviceController field = getWidget(fxfd.getName(), FXFBlaineDeviceController.class);
+                if (field !=null){
+                    field.initProfile(fxfd, profile.getDescriptor("it_analiseaverage"), profile.getDescriptor("it_analisersd"));
+                }
+                else{
+                    LOG.warning(String.format("Profile load said it failed to find a BlaineDescriptor on controller wdglist..."));
+                } 
             }
             else{
-                LOG.warning(String.format("Profile load said Failed do locate field %s on controller wdglist...", fxfd.getName()));
+                FXFField field = getWidget(fxfd.getName(), FXFField.class);
+                if (field !=null){
+                    //LOG.info(String.format("Profile load said field %s was updated", fxfd.getName()));
+                    initField(field, fxfd);
+                }
+                else{
+                    LOG.warning(String.format("Profile load said it failed do locate field %s on controller wdglist...", 
+                            fxfd.getName()));
+                } 
             }
         }
  
-        
         sidebar_btcycle.setGraphic(GlyphsBuilder.getAwesomeGlyph(FontAwesomeIcon.REFRESH, "black", 4));
         sidebar_btstore.setGraphic(GlyphsBuilder.getAwesomeGlyph(FontAwesomeIcon.DATABASE, "black", 4));
         sidebar_btreport.setGraphic(GlyphsBuilder.getAwesomeGlyph(FontAwesomeIcon.FILE_PDF_ALT, "black", 4));
         sidebar_btbroadcast.setGraphic(GlyphsBuilder.getAwesomeGlyph(FontAwesomeIcon.SHARE_ALT, "black", 4));
         sidebar_btloadfile.setGraphic(GlyphsBuilder.getAwesomeGlyph(FontAwesomeIcon.ARCHIVE, "black", 4));
-      
+             
     }
     
-    
-    
-    
-    public void lockUI (boolean lock){
-      
-        if (lock){
-            sidebar_btstore.setOpacity(0.5);
-            sidebar_btreport.setOpacity(0.5);
-            sidebar_btbroadcast.setOpacity(0.5);
-        }
-        else{
-            sidebar_btstore.setOpacity(1.0);
-            sidebar_btreport.setOpacity(1.0);
-            sidebar_btbroadcast.setOpacity(1.0);
+    public void setUIState(String verb){
+        
+        
+        
+        switch (verb){
+            case "FRESH_ANALISYS":
+                sidebar_btcycle.setDisable(false);
+                sidebar_btstore.setDisable(true);
+                sidebar_btreport.setDisable(true);
+                sidebar_btbroadcast.setDisable(true);
+                sidebar_btloadfile.setDisable(false);
+                blainedevice.enableRun(true);
+                break;
+            case "LOADED":
+                sidebar_btcycle.setDisable(false);
+                sidebar_btstore.setDisable(true);
+                sidebar_btreport.setDisable(false);
+                sidebar_btbroadcast.setDisable(false);
+                sidebar_btloadfile.setDisable(true);
+                blainedevice.enableRun(false);
+                break;    
+            case "RUNNING":
+                sidebar_btcycle.setDisable(true);
+                sidebar_btstore.setDisable(true);
+                sidebar_btreport.setDisable(true);
+                sidebar_btbroadcast.setDisable(true);
+                sidebar_btloadfile.setDisable(true);
+                blainedevice.enableRun(true);
+                break;
+            case "DONE_VALID":
+                sidebar_btcycle.setDisable(false);
+                sidebar_btstore.setDisable(false);
+                sidebar_btreport.setDisable(false);
+                sidebar_btbroadcast.setDisable(false);
+                sidebar_btloadfile.setDisable(true);
+                blainedevice.enableRun(false);
+                break;
+            case "DONE_INVALID":
+                sidebar_btcycle.setDisable(false);
+                sidebar_btstore.setDisable(true);
+                sidebar_btreport.setDisable(true);
+                sidebar_btbroadcast.setDisable(true);
+                sidebar_btloadfile.setDisable(true);
+                blainedevice.enableRun(true);
+                break;    
+            default:
+                sidebar_btcycle.setDisable(false);
+                sidebar_btstore.setDisable(true);
+                sidebar_btreport.setDisable(true);
+                sidebar_btbroadcast.setDisable(true);
+                sidebar_btloadfile.setDisable(false);
+                blainedevice.enableRun(true);
+                break;
         }
         
     }
+    
     
     
     // ========================================= DISPATCH SECTION =======================================================
     
     @FXML
     void btcycle_action(MouseEvent event) {
-        //checklist1.initTimeList();
         machine.newAnalise();
     }
 
@@ -530,17 +664,17 @@ public class FX1Controller extends FXFController implements com.opus.fxsupport.F
 
     @FXML
     void btreport_action(MouseEvent event) {
-        //pp100ctrl.reportAnalise();
+        machine.reportAnalise();
     }
 
     @FXML
     void btstore_action(MouseEvent event) {
-        //pp100ctrl.storeAnalise();
+        machine.storeAnaliseAction();
     }
     
     @FXML
     void btloadfile_action(MouseEvent event) {
-        //pp100ctrl.loadFile();
+        machine.loadFileAction();
     }
     
     @FXML
@@ -568,17 +702,13 @@ public class FX1Controller extends FXFController implements com.opus.fxsupport.F
     
     @FXML
     void user_action(MouseEvent event) {
-        //LOG.info("User clicked ...");
-//        if (pnl_user.isVisible()){
-//            pnl_user.setVisible(false);
-//        }
-//        else{
-//            pnl_user.setVisible(true);
-//        }
+
     }
   
-    public Scene getScene() { return scene;}
+    public Scene getScene() { return getScene();}
 
+    
+    
     private static final String UID = "FX1";
     @Override
     public String getUID() { return UID;}

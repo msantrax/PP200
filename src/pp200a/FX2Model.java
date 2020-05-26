@@ -6,6 +6,7 @@
 package pp200a;
 
 import com.opus.fxsupport.PropertyLinkDescriptor;
+import com.opus.syssupport.ActivityModel;
 import java.util.LinkedHashMap;
 import java.util.logging.Logger;
 
@@ -13,7 +14,7 @@ import java.util.logging.Logger;
  *
  * @author opus
  */
-public class FX2Model {
+public class FX2Model extends ActivityModel {
 
     private static final Logger log = Logger.getLogger(FX2Model.class.getName());
     
@@ -23,14 +24,40 @@ public class FX2Model {
     private boolean calibclean = true;
     
     
-    private LinkedHashMap<String,PropertyLinkDescriptor>cal_proplink_uimap;
-    private LinkedHashMap<String,PropertyLinkDescriptor>cal_proplink_modelmap;
+    
+    public FX2Model() {
+        proplink_uimap = new LinkedHashMap<>();
+        proplink_modelmap = new LinkedHashMap<>();
+        cal = new CalibDescriptor();
+    }
+    
+
+    public CalibDescriptor getCal() {
+        return cal;
+    }
+
+    public void setCal(CalibDescriptor cal) {
+        this.cal = cal;
+    }
+
+    public CalibDescriptor getLastcal() {
+        return lastcal;
+    }
+
+    public void setLastcal(CalibDescriptor lastcal) {
+        this.lastcal = lastcal;
+    }
+
+    public boolean isCalibclean() {
+        return calibclean;
+    }
+
+    public void setCalibclean(boolean calibclean) {
+        this.calibclean = calibclean;
+    }
 
     
     
-    public FX2Model() {
-    
-    }
     
     
     

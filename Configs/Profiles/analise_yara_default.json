@@ -1,22 +1,22 @@
 {
-  "label": "Cimento CP-40",
+  "label": "Perfil Yara Default",
   "report_template": [
-    "pdf1.pdf"
+    "yara.pdf"
   ],
   "csv_file": "default.csv",
   "descriptors": [
     {
-      "name": "it_porosidade",
-      "tooltip_message": "Valor da Porosidade",
+      "name": "it_altura",
+      "tooltip_message": "Altura da camada de analise",
       "validator_type": "number",
       "locked": true,
       "use_range": true,
       "use_windowrange": true,
       "ranges": [
-        0.5,
+        2.8,
         10.0,
         50.0,
-        0.66
+        0.0
       ],
       "use_autocomplete": false,
       "autocomplete_file": "",
@@ -28,9 +28,11 @@
       "custom_classtype": "",
       "format": "%5.2f",
       "unit": "",
-      "default_value": "0.47",
+      "default_value": "2.8",
       "required": true,
-      "maybenull": false
+      "maybenull": false,
+      "useformula": false,
+      "formulafile": ""
     },
     {
       "name": "it_densidade",
@@ -40,10 +42,10 @@
       "use_range": true,
       "use_windowrange": true,
       "ranges": [
-        2.76,
+        1.1242,
         10.0,
         50.0,
-        4.14
+        0.0
       ],
       "use_autocomplete": false,
       "autocomplete_file": "",
@@ -54,20 +56,22 @@
       "custom": {},
       "custom_classtype": "",
       "format": "%5.2f",
-      "unit": "g/cm³",
-      "default_value": "2.77",
+      "unit": "",
+      "default_value": "1.1242",
       "required": true,
-      "maybenull": false
+      "maybenull": false,
+      "useformula": false,
+      "formulafile": ""
     },
     {
-      "name": "it_massa_calculada",
-      "tooltip_message": "Massa da amostra a ser medida",
+      "name": "it_massa",
+      "tooltip_message": "Peso da amostra a ser medida",
       "validator_type": "number",
       "locked": true,
       "use_range": true,
       "use_windowrange": true,
       "ranges": [
-        2.0,
+        8.6,
         50.0,
         80.0,
         0.0
@@ -80,122 +84,16 @@
       "local_callback": "",
       "custom": {},
       "custom_classtype": "",
-      "format": "%5.2f",
-      "unit": "g",
-      "default_value": "0.0",
-      "required": false,
-      "maybenull": false
-    },
-    {
-      "name": "it_calibfile",
-      "tooltip_message": "Identificação da ultima calibração",
-      "validator_type": "void",
-      "locked": true,
-      "use_range": false,
-      "use_windowrange": true,
-      "ranges": [
-        NaN,
-        NaN,
-        NaN,
-        NaN
-      ],
-      "use_autocomplete": false,
-      "autocomplete_file": "",
-      "autocomplete_autoadd": false,
-      "autocomplete_maxitem": 150,
-      "regex": "",
-      "local_callback": "",
-      "custom": {},
-      "custom_classtype": "",
-      "format": "%5.2f",
+      "format": "%6.3f",
       "unit": "",
-      "default_value": "calbl-000000000000.json",
-      "required": false,
-      "maybenull": false
-    },
-    {
-      "name": "it_layervolume",
-      "tooltip_message": "Volume da Camada conf. Calibração",
-      "validator_type": "number",
-      "locked": true,
-      "use_range": true,
-      "use_windowrange": true,
-      "ranges": [
-        1.9,
-        50.0,
-        80.0,
-        0.0
-      ],
-      "use_autocomplete": false,
-      "autocomplete_file": "",
-      "autocomplete_autoadd": false,
-      "autocomplete_maxitem": 150,
-      "regex": "",
-      "local_callback": "",
-      "custom": {},
-      "custom_classtype": "",
-      "format": "%5.2f",
-      "unit": "",
-      "default_value": "0.0",
-      "required": false,
-      "maybenull": false
-    },
-    {
-      "name": "it_constantek",
-      "tooltip_message": "Constante de calibração calculada",
-      "validator_type": "number",
-      "locked": true,
-      "use_range": true,
-      "use_windowrange": true,
-      "ranges": [
-        2.13,
-        50.0,
-        80.0,
-        0.0
-      ],
-      "use_autocomplete": false,
-      "autocomplete_file": "",
-      "autocomplete_autoadd": false,
-      "autocomplete_maxitem": 150,
-      "regex": "",
-      "local_callback": "",
-      "custom": {},
-      "custom_classtype": "",
-      "format": "%5.2f",
-      "unit": "",
-      "default_value": "0.0",
-      "required": false,
-      "maybenull": false
+      "default_value": "8.6",
+      "required": true,
+      "maybenull": false,
+      "useformula": false,
+      "formulafile": ""
     },
     {
       "name": "it_temperature",
-      "tooltip_message": "Temperatura da Analise",
-      "validator_type": "number",
-      "locked": true,
-      "use_range": true,
-      "use_windowrange": false,
-      "ranges": [
-        10.0,
-        18.0,
-        30.0,
-        50.0
-      ],
-      "use_autocomplete": false,
-      "autocomplete_file": "",
-      "autocomplete_autoadd": false,
-      "autocomplete_maxitem": 150,
-      "regex": "",
-      "local_callback": "",
-      "custom": {},
-      "custom_classtype": "",
-      "format": "%5.2f",
-      "unit": "",
-      "default_value": "23.0",
-      "required": true,
-      "maybenull": false
-    },
-    {
-      "name": "it_caltemp",
       "tooltip_message": "Temperatura da Calibração",
       "validator_type": "number",
       "locked": true,
@@ -216,10 +114,12 @@
       "custom": {},
       "custom_classtype": "",
       "format": "%5.2f",
-      "unit": "",
-      "default_value": "25.0",
+      "unit": "C",
+      "default_value": "25",
       "required": false,
-      "maybenull": false
+      "maybenull": false,
+      "useformula": false,
+      "formulafile": ""
     },
     {
       "name": "blainedevice",
@@ -246,14 +146,16 @@
         "skipfirst": false,
         "interrun": 0.5,
         "auto_timeout": 3.0,
-        "an_timeout": 10.0
+        "an_timeout": 220.0
       },
       "custom_classtype": "BlaineFieldDescriptor",
       "format": "%5.2f",
       "unit": "",
       "default_value": "0.0",
       "required": false,
-      "maybenull": true
+      "maybenull": true,
+      "useformula": false,
+      "formulafile": ""
     },
     {
       "name": "it_analiseaverage",
@@ -266,7 +168,7 @@
         4.0,
         10.0,
         50.0,
-        0.0
+        200.0
       ],
       "use_autocomplete": false,
       "autocomplete_file": "",
@@ -277,10 +179,12 @@
       "custom": {},
       "custom_classtype": "",
       "format": "%5.2f",
-      "unit": "seg.",
+      "unit": "",
       "default_value": "0.0",
       "required": false,
-      "maybenull": false
+      "maybenull": false,
+      "useformula": false,
+      "formulafile": ""
     },
     {
       "name": "it_analisersd",
@@ -290,10 +194,10 @@
       "use_range": true,
       "use_windowrange": false,
       "ranges": [
-        0.0,
-        0.0,
-        1.0,
-        8.0
+        1.0E-4,
+        2.0E-4,
+        1.5,
+        3.0
       ],
       "use_autocomplete": false,
       "autocomplete_file": "",
@@ -304,22 +208,24 @@
       "custom": {},
       "custom_classtype": "",
       "format": "%5.2f",
-      "unit": "%",
+      "unit": "",
       "default_value": "0.0",
       "required": false,
-      "maybenull": false
+      "maybenull": false,
+      "useformula": false,
+      "formulafile": ""
     },
     {
-      "name": "it_blaineresult",
-      "tooltip_message": "Resultado da analise",
+      "name": "it_poros",
+      "tooltip_message": "Poros",
       "validator_type": "number",
       "locked": true,
       "use_range": true,
       "use_windowrange": true,
       "ranges": [
-        1.0,
-        30.0,
-        70.0,
+        0.7,
+        10.0,
+        20.0,
         3.0
       ],
       "use_autocomplete": false,
@@ -331,14 +237,74 @@
       "custom": {},
       "custom_classtype": "",
       "format": "%5.3f",
-      "unit": "cm²/g",
-      "default_value": "0.0",
+      "unit": "",
+      "default_value": "0.7",
       "required": false,
-      "maybenull": false
+      "maybenull": false,
+      "useformula": true,
+      "formulafile": "form_2605_001003.json"
+    },
+    {
+      "name": "it_ssa",
+      "tooltip_message": "SSA",
+      "validator_type": "number",
+      "locked": true,
+      "use_range": true,
+      "use_windowrange": true,
+      "ranges": [
+        2300.0,
+        10.0,
+        20.0,
+        3.0
+      ],
+      "use_autocomplete": false,
+      "autocomplete_file": "",
+      "autocomplete_autoadd": false,
+      "autocomplete_maxitem": 150,
+      "regex": "",
+      "local_callback": "",
+      "custom": {},
+      "custom_classtype": "",
+      "format": "%6.2f",
+      "unit": "",
+      "default_value": "2300.0",
+      "required": false,
+      "maybenull": false,
+      "useformula": true,
+      "formulafile": "form_2505_123854.json"
+    },
+    {
+      "name": "it_perm",
+      "tooltip_message": "Perm",
+      "validator_type": "number",
+      "locked": true,
+      "use_range": true,
+      "use_windowrange": true,
+      "ranges": [
+        27.0,
+        10.0,
+        20.0,
+        3.0
+      ],
+      "use_autocomplete": false,
+      "autocomplete_file": "",
+      "autocomplete_autoadd": false,
+      "autocomplete_maxitem": 150,
+      "regex": "",
+      "local_callback": "",
+      "custom": {},
+      "custom_classtype": "",
+      "format": "%6.2f",
+      "unit": "",
+      "default_value": "24.0",
+      "required": false,
+      "maybenull": false,
+      "useformula": true,
+      "formulafile": "form_2505_233701.json"
     },
     {
       "name": "it_sid",
-      "tooltip_message": "Entre com a identificaço da analise",
+      "tooltip_message": "Identificação da analise",
       "validator_type": "text_notempty",
       "locked": false,
       "use_range": false,
@@ -351,7 +317,7 @@
       ],
       "use_autocomplete": true,
       "autocomplete_file": "sid_ac1.json",
-      "autocomplete_autoadd": true,
+      "autocomplete_autoadd": false,
       "autocomplete_maxitem": 150,
       "regex": "",
       "local_callback": "",
@@ -359,15 +325,17 @@
       "custom_classtype": "",
       "format": "%5.2f",
       "unit": "",
-      "default_value": "Campo de Identificação",
-      "required": true,
-      "maybenull": false
+      "default_value": "Amostra default",
+      "required": false,
+      "maybenull": false,
+      "useformula": false,
+      "formulafile": ""
     },
     {
       "name": "it_lote",
-      "tooltip_message": "Cartao de Credito VISA",
-      "validator_type": "regex",
-      "locked": false,
+      "tooltip_message": "Lote da analise",
+      "validator_type": "void",
+      "locked": true,
       "use_range": false,
       "use_windowrange": true,
       "ranges": [
@@ -380,21 +348,23 @@
       "autocomplete_file": "",
       "autocomplete_autoadd": false,
       "autocomplete_maxitem": 150,
-      "regex": "^4[0-9]{12}(?:[0-9]{3})?$",
+      "regex": "",
       "local_callback": "",
       "custom": {},
       "custom_classtype": "",
       "format": "%5.2f",
       "unit": "",
-      "default_value": "Campo de Lote",
-      "required": true,
-      "maybenull": false
+      "default_value": "Lote-00000",
+      "required": false,
+      "maybenull": false,
+      "useformula": false,
+      "formulafile": ""
     },
     {
       "name": "it_notas",
-      "tooltip_message": "Use leitor na USB e Folha de Dados 5",
-      "validator_type": "barcode",
-      "locked": false,
+      "tooltip_message": "Notas diversas",
+      "validator_type": "void",
+      "locked": true,
       "use_range": false,
       "use_windowrange": true,
       "ranges": [
@@ -403,8 +373,8 @@
         NaN,
         NaN
       ],
-      "use_autocomplete": true,
-      "autocomplete_file": "1804_121157.json",
+      "use_autocomplete": false,
+      "autocomplete_file": "",
       "autocomplete_autoadd": false,
       "autocomplete_maxitem": 150,
       "regex": "",
@@ -413,12 +383,14 @@
       "custom_classtype": "",
       "format": "%5.2f",
       "unit": "",
-      "default_value": "Notas gerais 1",
+      "default_value": "",
       "required": false,
-      "maybenull": false
+      "maybenull": false,
+      "useformula": false,
+      "formulafile": ""
     }
   ],
-  "classtype": "pp200a.ProfileBlaine",
+  "classtype": "pp200a.ProfileYara",
   "id": "id1",
-  "argument": "analise_blaine:CP40"
+  "argument": "analise_yara:default"
 }

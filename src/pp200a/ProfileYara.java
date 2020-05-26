@@ -28,7 +28,7 @@ public class ProfileYara extends Profile{
         classtype="pp200a.ProfileYara";
         csv_file="default.csv";
         report_template=new ArrayList<String>();
-        report_template.add("pdf1.pdf");
+        report_template.add("yara.pdf");
         label="Profile";
         
         instance = this;
@@ -41,51 +41,52 @@ public class ProfileYara extends Profile{
         descriptors.clear();
         
         descriptors.add(new FXFFieldDescriptor()
-                .setName("it_porosidade")
-                .setTooltip_message("Valor da Porosidade")
+                .setName("it_altura")
+                .setTooltip_message("Altura da camada de analise")
                 .setUse_range(true)
-                .setRanges(new Double[] {0.5, 10.0, 50.0, 0.0})
-                .setDefault_value("0.5")
+                .setRanges(new Double[] {2.8, 10.0, 50.0, 0.0})
+                .setDefault_value("2.8")
         );
         
         descriptors.add(new FXFFieldDescriptor()
                 .setName("it_densidade")
                 .setTooltip_message("Densidade medida")
                 .setUse_range(true)
-                .setRanges(new Double[] {2.0, 30.0, 80.0, 0.0})
-                .setDefault_value("2.76")
+                .setRanges(new Double[] {1.12, 30.0, 80.0, 0.0})
+                .setDefault_value("1.1242")
         );
         
         descriptors.add(new FXFFieldDescriptor()
-                .setName("it_massa_calculada")
-                .setTooltip_message("Massa da amostra a ser medida")
+                .setName("it_massa")
+                .setTooltip_message("Peso da amostra a ser medida")
                 .setUse_range(true)
-                .setRequired(false)
-                .setRanges(new Double[] {2.0, 50.0, 80.0, 0.0})
+                .setRequired(true)
+                .setRanges(new Double[] {8.6, 50.0, 80.0, 0.0})
+                .setDefault_value("8.6")
         );
-        
-        
-        
-        
+       
         descriptors.add(new FXFFieldDescriptor()
                 .setName("it_temperature")
                 .setTooltip_message("Temperatura da Calibração")
                 .setUse_range(true)
-                .setRequired(false)
+                .setRequired(true)
                 .setUse_windowrange(false)
                 .setRanges(new Double[] {10.0, 18.0 , 30.0, 50.0})
         );
         
-        descriptors.add(new FXFFieldDescriptor()
-                .setName("it_analisetime")
-                .setTooltip_message("Tempo do ensaio")
-                .setMaybenull(true)
-                .setRequired(false)
-                .setUse_range(true)
-                .setUse_windowrange(false)
-                .setRanges(new Double[] {50.0, 60.0 , 170.0, 200.0})
-                .setLocal_callback("UPDATETIME")
-        );
+        
+        // ===============================================================================================================
+//        
+//        descriptors.add(new FXFFieldDescriptor()
+//                .setName("it_analisetime")
+//                .setTooltip_message("Tempo de escoamento")
+//                .setMaybenull(true)
+//                .setRequired(false)
+//                .setUse_range(true)
+//                .setUse_windowrange(false)
+//                .setRanges(new Double[] {50.0, 60.0 , 170.0, 200.0})
+//                .setLocal_callback("UPDATETIME")
+//        );
         
         
         descriptors.add(new FXFFieldDescriptor()
@@ -107,6 +108,41 @@ public class ProfileYara extends Profile{
         );
         
         
+        
+        // ===================================================================================================
+        
+        descriptors.add(new FXFFieldDescriptor()
+                .setName("it_poros")
+                .setTooltip_message("Porosidade da amostra")
+                .setUse_range(true)
+                .setUse_windowrange(true)
+                .setRanges(new Double[] {0.7, 10.0 , 20.0, 3.0})
+                .setRequired(false)
+                .setFormat("%5.3f")
+        );
+        
+        descriptors.add(new FXFFieldDescriptor()
+                .setName("it_ssa")
+                .setTooltip_message("SSA")
+                .setUse_range(true)
+                .setUse_windowrange(true)
+                .setRanges(new Double[] {2300.0, 10.0 , 20.0, 3.0})
+                .setRequired(false)
+                .setFormat("%6.2f")
+        );
+        
+        descriptors.add(new FXFFieldDescriptor()
+                .setName("it_perm")
+                .setTooltip_message("Perm")
+                .setUse_range(true)
+                .setUse_windowrange(true)
+                .setRanges(new Double[] {24.0, 10.0 , 20.0, 3.0})
+                .setRequired(false)
+                .setFormat("%6.2f")
+        );
+        
+        
+        // ===========================================================================================================
         
         descriptors.add(new FXFFieldDescriptor()
                 .setName("it_sid")

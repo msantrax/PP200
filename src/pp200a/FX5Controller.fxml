@@ -15,7 +15,7 @@
 
 <VBox prefHeight="800.0" prefWidth="812.0" stylesheets="@../../../../../FXSupport/src/com/opus/fxsupport/fxfsupport.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <StackPane alignment="CENTER_LEFT" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="100.0" styleClass="fxf-fx2banner">
+      <StackPane alignment="CENTER_LEFT" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="100.0" styleClass="fxf-fx5banner">
          <opaqueInsets>
             <Insets />
          </opaqueInsets>
@@ -26,7 +26,7 @@
             <Insets left="20.0" />
          </padding>
          <children>
-            <Label text="CALIBRAÇÃO" textFill="WHITE" StackPane.alignment="CENTER_LEFT">
+            <Label text="ANALISE YARA" textFill="WHITE" StackPane.alignment="CENTER_LEFT">
                <StackPane.margin>
                   <Insets left="30.0" />
                </StackPane.margin>
@@ -58,12 +58,11 @@
             </VBox>
             <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#canvas_clicked" prefHeight="705.0" prefWidth="1105.0" style="-fx-background-color: white;" HBox.hgrow="ALWAYS">
                <children>
-                  <FXFTextField id="02" fx:id="it_porosidade" focusPosition="1" layoutX="228.0" layoutY="55.0" prefHeight="28.0" prefWidth="123.0" promptText="entre o valor" styleClass="fxf-text-field" />
-                  <Label layoutX="46.0" layoutY="59.0" text="Porosidade :" />
-                  <FXFTextField id="01" fx:id="it_densidade" focusPosition="2" layoutX="228.0" layoutY="105.0" prefHeight="28.0" prefWidth="123.0" promptText="valor medido" styleClass="fxf-text-field" />
-                  <Label layoutX="46.0" layoutY="110.0" text="Densidade :" />
-                  <FXFTextField id="02" fx:id="it_volume" layoutX="228.0" layoutY="155.0" prefHeight="28.0" prefWidth="125.0" promptText="dado calculado" styleClass="fxf-text-field" />
-                  <FXFTextField id="02" fx:id="it_kfactor" alignment="CENTER" editable="false" layoutX="470.0" layoutY="411.0" prefHeight="48.0" prefWidth="168.0" styleClass="fxf-biglabel-field" text="0">
+                  <FXFTextField id="02" fx:id="it_altura" focusPosition="1" layoutX="190.0" layoutY="65.0" prefHeight="28.0" prefWidth="120.0" promptText="entre o valor" styleClass="fxf-text-field" />
+                  <Label layoutX="50.0" layoutY="70.0" text="Altura da amostra :" />
+                  <FXFTextField id="01" fx:id="it_densidade" focusPosition="2" layoutX="570.0" layoutY="65.0" prefHeight="28.0" prefWidth="120.0" promptText="entre o valor" styleClass="fxf-text-field" />
+                  <Label layoutX="455.0" layoutY="70.0" text="Densidade :" />
+                  <FXFTextField id="02" fx:id="it_poros" alignment="CENTER" editable="false" layoutX="415.0" layoutY="370.0" prefHeight="48.0" prefWidth="168.0" styleClass="fxf-label-field" text="0">
                      <font>
                         <Font name="System Bold" size="24.0" />
                      </font>
@@ -73,65 +72,68 @@
                         <Image url="@acpcombr_chrome.png" />
                      </image>
                   </ImageView>
-                  <Label layoutX="129.0" layoutY="420.0" text="Fator de Calibração (K) :">
+                  <Label layoutX="200.0" layoutY="377.0" text="Poros :">
                      <font>
                         <Font name="System Bold" size="24.0" />
                      </font>
                   </Label>
-                  <Label layoutX="810.0" layoutY="476.0" text="Média :" />
+                  <Label layoutX="830.0" layoutY="477.0" text="Média :" />
                   <FXFTextField id="01" fx:id="it_analiseaverage" alignment="CENTER" editable="false" layoutX="920.0" layoutY="470.0" prefHeight="30.0" prefWidth="125.0" promptText="em segundos..." styleClass="fxf-label-field" text="0">
                      <font>
                         <Font name="System Bold" size="14.0" />
                      </font>
                   </FXFTextField>
-                  <Label layoutX="815.0" layoutY="525.0" text="R. S. D. :" />
+                  <Label layoutX="830.0" layoutY="525.0" text="R. S. D. :" />
                   <FXFTextField id="01" fx:id="it_analisersd" alignment="CENTER" editable="false" layoutX="920.0" layoutY="520.0" prefHeight="30.0" prefWidth="125.0" promptText="em segundos..." styleClass="fxf-label-field" text="0">
                      <font>
                         <Font name="System Bold" size="14.0" />
                      </font>
                   </FXFTextField>
-                  <Label layoutX="376.0" layoutY="110.0" text="g / cm³" />
-                  <Label layoutX="386.0" layoutY="162.0" text="cm³" />
-                  <Label layoutX="46.0" layoutY="162.0" text="Volume da Camada :" />
-                  <Label alignment="CENTER" layoutX="102.0" layoutY="18.0" prefHeight="16.0" prefWidth="300.0" styleClass="section-header" text="Dados Preliminares">
+                  <Label layoutX="721.0" layoutY="70.0" text="g / cm³" />
+                  <Label alignment="CENTER" layoutX="340.0" layoutY="25.0" prefHeight="16.0" prefWidth="300.0" styleClass="section-header" text="Dados Preliminares">
                      <font>
                         <Font size="16.0" />
                      </font>
                   </Label>
-                  <FXFTextField id="02" fx:id="it_sid" focusPosition="5" layoutX="148.0" layoutY="276.0" prefHeight="28.0" prefWidth="328.0" promptText="entre com a identificação do padrao" styleClass="fxf-text-field" />
-                  <Label layoutX="40.0" layoutY="282.0" text="ID do Padrão :" />
-                  <Label alignment="CENTER" layoutX="338.0" layoutY="241.0" prefHeight="16.0" prefWidth="300.0" styleClass="section-header" text="Identificação da Calibração">
+                  <FXFTextField id="02" fx:id="it_sid" focusPosition="5" layoutX="158.0" layoutY="251.0" prefHeight="28.0" prefWidth="328.0" promptText="entre com a identificação da amostra" styleClass="fxf-text-field" />
+                  <Label layoutX="50.0" layoutY="257.0" text="ID do Padrão :" />
+                  <Label alignment="CENTER" layoutX="340.0" layoutY="193.0" prefHeight="16.0" prefWidth="300.0" styleClass="section-header" text="Identificação da Amostra">
                      <font>
                         <Font size="16.0" />
                      </font>
                   </Label>
-                  <FXFTextField id="02" fx:id="it_notas" focusPosition="7" layoutX="148.0" layoutY="332.0" prefHeight="28.0" prefWidth="595.0" promptText="Digite aqui outros dados auxiliares" styleClass="fxf-text-field" />
-                  <Label layoutX="40.0" layoutY="338.0" text="Notas :" />
-                  <FXFTextField id="02" fx:id="it_filtro" focusPosition="6" layoutX="551.0" layoutY="276.0" prefHeight="28.0" prefWidth="193.0" promptText="entre com o tipo de filtro" styleClass="fxf-text-field" />
-                  <Label layoutX="486.0" layoutY="282.0" text="Filtro :" />
-                  <FXFTextField id="02" fx:id="it_mass" alignment="CENTER" editable="false" layoutX="272.0" layoutY="459.0" prefHeight="48.0" prefWidth="168.0" styleClass="fxf-biglabel-field" text="0">
-                     <font>
-                        <Font name="System Bold" size="18.0" />
-                     </font>
-                  </FXFTextField>
-                  <Label layoutX="129.0" layoutY="472.0" text="Massa :">
-                     <font>
-                        <Font name="System Bold" size="18.0" />
-                     </font>
-                  </Label>
-                  <Label layoutX="477.0" layoutY="475.0" text="g">
-                     <font>
-                        <Font name="System Bold" size="18.0" />
-                     </font>
-                  </Label>
-                  <FXFTextField id="02" fx:id="it_area" focusPosition="3" layoutX="580.0" layoutY="55.0" prefHeight="28.0" prefWidth="123.0" promptText="entre o valor" styleClass="fxf-text-field" />
-                  <Label layoutX="460.0" layoutY="61.0" text="Superfície :" />
-                  <Label layoutX="725.0" layoutY="62.0" text="cm² / g" />
-                  <FXFTextField id="02" fx:id="it_temperature" focusPosition="4" layoutX="580.0" layoutY="105.0" prefHeight="28.0" prefWidth="123.0" promptText="entre o valor" styleClass="fxf-text-field" />
-                  <Label layoutX="460.0" layoutY="110.0" text="Temperatura :" />
-                  <Label layoutX="723.0" layoutY="110.0" text="C" />
+                  <FXFTextField id="02" fx:id="it_notas" focusPosition="7" layoutX="158.0" layoutY="307.0" prefHeight="28.0" prefWidth="595.0" promptText="Digite aqui outros dados auxiliares" styleClass="fxf-text-field" />
+                  <Label layoutX="50.0" layoutY="313.0" text="Notas :" />
+                  <FXFTextField id="02" fx:id="it_lote" focusPosition="6" layoutX="561.0" layoutY="251.0" prefHeight="28.0" prefWidth="193.0" promptText="entre com o num. do lote" styleClass="fxf-text-field" />
+                  <Label layoutX="496.0" layoutY="257.0" text="Lote :" />
+                  <FXFTextField id="02" fx:id="it_massa" focusPosition="3" layoutX="190.0" layoutY="125.0" prefHeight="28.0" prefWidth="120.0" promptText="entre o valor" styleClass="fxf-text-field" />
+                  <Label layoutX="50.0" layoutY="130.0" text="Peso da amostra :" />
+                  <Label layoutX="347.0" layoutY="130.0" text="g" />
+                  <FXFTextField id="02" fx:id="it_temperature" focusPosition="4" layoutX="570.0" layoutY="125.0" prefHeight="28.0" prefWidth="120.0" promptText="entre o valor" styleClass="fxf-text-field" />
+                  <Label layoutX="455.0" layoutY="130.0" text="Temperatura :" />
+                  <Label layoutX="723.0" layoutY="130.0" text="C" />
                   <DateWidget fx:id="date" layoutX="803.0" />
                   <FXFBlaineDeviceController fx:id="blainedevice" layoutX="819.0" layoutY="158.0" />
+                  <Label layoutX="200.0" layoutY="444.0" text="SSA :">
+                     <font>
+                        <Font name="System Bold" size="24.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="200.0" layoutY="510.0" text="Perm :">
+                     <font>
+                        <Font name="System Bold" size="24.0" />
+                     </font>
+                  </Label>
+                  <FXFTextField id="02" fx:id="it_ssa" alignment="CENTER" editable="false" layoutX="415.0" layoutY="435.0" prefHeight="48.0" prefWidth="168.0" styleClass="fxf-label-field" text="0">
+                     <font>
+                        <Font name="System Bold" size="24.0" />
+                     </font>
+                  </FXFTextField>
+                  <FXFTextField id="02" fx:id="it_perm" alignment="CENTER" editable="false" layoutX="415.0" layoutY="500.0" prefHeight="48.0" prefWidth="168.0" styleClass="fxf-label-field" text="0">
+                     <font>
+                        <Font name="System Bold" size="24.0" />
+                     </font>
+                  </FXFTextField>
                </children>
             </AnchorPane>
          </children>

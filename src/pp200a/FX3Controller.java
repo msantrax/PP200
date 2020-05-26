@@ -266,20 +266,20 @@ public class FX3Controller extends FXFController implements com.opus.fxsupport.F
         
         
         fxfd.setField(field);
-        Control ctrl = (Control)fxfd.getField();
+        Control ctrl = (Control)fxfd.getField(Control.class);
         
         //LinkedHashMap<String,PropertyLinkDescriptor>proplink_uimap = pp100ctrl.getCalUIMap();
         
         
         ctrl.setTooltip(new Tooltip(fxfd.getTooltip_message()));
 
-        pp100ctrl.updateUIWidget(fxfd.getName(), fxfd.getField(), false);
+        pp100ctrl.updateUIWidget(fxfd.getName(), fxfd.getField(FXFField.class), false);
         field.setSid(fxfd.getName());
 
         // Create Number Validator if needed
         if (fxfd.getValidator_type().equals("number")){
             NumberValidator nv = new NumberValidator();
-            validators.put(fxfd.getField(), nv);
+            validators.put(fxfd.getField(FXFField.class), nv);
             
             nv.setMaybenull(fxfd.isMaybenull());
             ValidationSupport.setRequired(ctrl, fxfd.isRequired());
@@ -293,7 +293,7 @@ public class FX3Controller extends FXFController implements com.opus.fxsupport.F
                 }
             } 
             
-            validators.get(fxfd.getField()).initTooltip(ctrl.getTooltip());
+            validators.get(fxfd.getField(FXFField.class)).initTooltip(ctrl.getTooltip());
            
             
             vs.registerValidator(ctrl, new Validator<String>(){
@@ -316,8 +316,8 @@ public class FX3Controller extends FXFController implements com.opus.fxsupport.F
         
         else if (fxfd.getValidator_type().equals("notempty")){
             EmptyValidator ev = new EmptyValidator();
-            validators.put(fxfd.getField(), ev);
-            validators.get(fxfd.getField()).initTooltip(ctrl.getTooltip());
+            validators.put(fxfd.getField(FXFField.class), ev);
+            validators.get(fxfd.getField(FXFField.class)).initTooltip(ctrl.getTooltip());
             //ValidationSupport.setRequired(ctrl, fxfd.isRequired());
             
             vs.registerValidator(ctrl, new Validator<String>(){
@@ -340,8 +340,8 @@ public class FX3Controller extends FXFController implements com.opus.fxsupport.F
         
         else if (fxfd.getValidator_type().equals("void")){
             VoidValidator vv = new VoidValidator();
-            validators.put(fxfd.getField(), vv);
-            validators.get(fxfd.getField()).initTooltip(ctrl.getTooltip());
+            validators.put(fxfd.getField(FXFField.class), vv);
+            validators.get(fxfd.getField(FXFField.class)).initTooltip(ctrl.getTooltip());
             //ValidationSupport.setRequired(ctrl, fxfd.isRequired());
             
             vs.registerValidator(ctrl, new Validator<String>(){
@@ -383,7 +383,7 @@ public class FX3Controller extends FXFController implements com.opus.fxsupport.F
                 }
             }
             
-            TextFields.bindAutoCompletion((TextField)fxfd.getField(), acl);
+            TextFields.bindAutoCompletion((TextField)fxfd.getField(FXFField.class), acl);
         }
         
         String localcallback = fxfd.getLocal_callback();
@@ -858,8 +858,7 @@ public class FX3Controller extends FXFController implements com.opus.fxsupport.F
     
     
     private void visualizeRecords(){
-        
-        
+      
         ArrayList<Long> recs = getSelectedRecords();
         
     }
@@ -1200,6 +1199,10 @@ public class FX3Controller extends FXFController implements com.opus.fxsupport.F
     public void update() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+    
+    
+    
+    
 }
 
 

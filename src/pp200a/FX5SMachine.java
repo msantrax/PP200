@@ -11,6 +11,7 @@ import com.opus.fxsupport.DialogMessageBuilder;
 import com.opus.fxsupport.FXFAnaliseListItem;
 import com.opus.fxsupport.FXFCheckListViewNumber;
 import com.opus.fxsupport.FXFField;
+import com.opus.fxsupport.FXFFieldDescriptor;
 import com.opus.fxsupport.PropertyLinkDescriptor;
 import com.opus.syssupport.ActivityMachine;
 import com.opus.syssupport.Config;
@@ -48,18 +49,20 @@ import javafx.beans.value.ObservableValue;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.font.PDSimpleFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.mariuszgromada.math.mxparser.Argument;
+import org.mariuszgromada.math.mxparser.Expression;
 
 
 
-public class FX1SMachine extends ActivityMachine {
 
-    private static final Logger log = Logger.getLogger(FX1SMachine.class.getName());
+public class FX5SMachine extends ActivityMachine {
+
+    private static final Logger log = Logger.getLogger(FX5SMachine.class.getName());
     
     private Controller ctrl = Controller.getInstance();
-    private FX1Model current_model;
-    private FX1Controller anct;
+    private FX5Model current_model;
+    private FX5Controller anct;
     private DBService dbservice;
     
     private boolean nocalc = false;
@@ -68,14 +71,14 @@ public class FX1SMachine extends ActivityMachine {
     public static final Double visco_a1 = 1.3084615380E-03;
    
     
-    private static FX1SMachine instance; 
-    public static FX1SMachine getInstance(){
-        if (instance == null) {instance = new FX1SMachine();}
+    private static FX5SMachine instance; 
+    public static FX5SMachine getInstance(){
+        if (instance == null) {instance = new FX5SMachine();}
         return instance;
     }
 
     
-    public FX1SMachine() {
+    public FX5SMachine() {
         models = new LinkedHashMap<>();
         ctrl.loadStates(this.getClass(), this); 
     }
@@ -92,10 +95,10 @@ public class FX1SMachine extends ActivityMachine {
     @Override
     public void activateModel (String id){
         log.info(String.format("Activating model %s ", id));
-        FX1Model fx1m = (FX1Model)models.get(id);
+        FX5Model fx1m = (FX5Model)models.get(id);
         if (fx1m != null){
             current_model = fx1m;
-            anct = (FX1Controller)fx1m.getFXCtrl();
+            anct = (FX5Controller)fx1m.getFXCtrl();
         }
         else{
             log.severe(String.format("Failed to activate model %s", id));
@@ -151,11 +154,11 @@ public class FX1SMachine extends ActivityMachine {
     // ============================================= PROFILE & LOAD ACTIONS ==================================================
     
     
-    @smstate (state = "DELETEPROFILE")
-    public boolean st_deleteProfile(SMTraffic smm){
+    @smstate (state = "DELETEYARAPROFILE")
+    public boolean st_deleteYaraProfile(SMTraffic smm){
         
         
-        ProfileBlaine pbl = (ProfileBlaine)current_model.getProfile();
+        ProfileYara pbl = (ProfileYara)current_model.getProfile();
         FXFHeaderband hb = FXFWindowManager.getInstance().getHeaderBand();
         ProfileResources prs = PicnoUtils.profile_resources;
         
@@ -183,11 +186,10 @@ public class FX1SMachine extends ActivityMachine {
             LauncherItem li = umap.get(0);
             
             String removed = pbl.getLabel();
-            ProfileBlaine nprof = (ProfileBlaine)prs.removeResource(pbl);
+            ProfileYara nprof = (ProfileYara)prs.removeResource(pbl);
             if (nprof != null){
                 li.setArgument(nprof.getArgument());
                 PicnoUtils.saveLauncher(li);
-                
                 
                 ctrl.processSignal(new SMTraffic(0l, 0l, 0, "UPDATESTATUS", this.getClass(),
                                 new VirnaPayload().setObject(
@@ -209,10 +211,10 @@ public class FX1SMachine extends ActivityMachine {
     
     
     
-    @smstate (state = "CLONEPROFILE")
-    public boolean st_cloneProfile(SMTraffic smm){
+    @smstate (state = "CLONEYARAPROFILE")
+    public boolean st_cloneYaraProfile(SMTraffic smm){
 
-        ProfileBlaine pbl = (ProfileBlaine)current_model.getProfile();        
+        ProfileYara pbl = (ProfileYara)current_model.getProfile();        
         FXFHeaderband hb = FXFWindowManager.getInstance().getHeaderBand();
         hb.hideMenubox();
 
@@ -244,7 +246,7 @@ public class FX1SMachine extends ActivityMachine {
                                         )));
                                     }
                                     else{
-                                        ctrl.processSignal(new SMTraffic(0l, 0l, 0, "UPDATESTATUS", this.getClass(),
+                                        ctrl.processSignal(new SMTraffic(0l, 0l, 0, "UPDATEYARASTATUS", this.getClass(),
                                                             new VirnaPayload().setObject(
                                                             new StatusMessage("Criado novo Perfil : "+ nv, 2000))
                                         ));
@@ -308,17 +310,12 @@ public class FX1SMachine extends ActivityMachine {
         }
         return "";
     }
-    
    
-    
- 
-    
- 
     
     // ================================== ANALISE CYCLES MANAGEMENT =========================================================
     
     public void newAnalise(){      
-        ctrl.processSignal(new SMTraffic(0l, 0l, 0, "NEWANALISE", this.getClass(),
+        ctrl.processSignal(new SMTraffic(0l, 0l, 0, "NEWANALISEYARA", this.getClass(),
                                    new VirnaPayload().setObject(current_model.getAn())
         ));
     }
@@ -327,30 +324,22 @@ public class FX1SMachine extends ActivityMachine {
         
         nocalc=true;
         
+        anct.updateField ("it_altura", current_model.getAn().getAltura(), true);
         anct.updateField ("it_densidade", current_model.getAn().getDensidade(), true);
-        anct.updateField ("it_porosidade", current_model.getAn().getPorosidade(), true);
-        anct.updateField ("it_massa_calculada", current_model.getAn().getMassa_ensaio(), true);
+        anct.updateField ("it_massa", current_model.getAn().getMassa_ensaio(), true);
         anct.updateField ("it_temperature", current_model.getAn().getTemperature(), false);
+        
         
         anct.updateField ("it_analiseaverage", current_model.getAn().getMedia(), false);
         anct.updateField ("it_analisersd", current_model.getAn().getRsd(), false);
-        anct.updateField ("it_blaineresult", current_model.getAn().getBlaine(), false);
+        anct.updateField ("it_poros", current_model.getAn().getPoros(), false);
+        anct.updateField ("it_perm", current_model.getAn().getPerm(), false);
+        anct.updateField ("it_ssa", current_model.getAn().getSSA(), false);
         
         anct.updateField ("it_sid", current_model.getAn().getSid(), false);
         anct.updateField ("it_lote", current_model.getAn().getLote(), false);
         anct.updateField ("it_notas", current_model.getAn().getNotas(), false);
         
-        String lbc = current_model.getProfile().getDescriptor("it_calibfile").getDefault_value();
-        if (lbc.equals("calbl-000000000000.json")){
-            anct.updateField ("it_calibfile", "Ultima Calibração", false);
-        }
-        else{
-            anct.updateField ("it_calibfile", current_model.getCal().getSid() , false);
-        }
- 
-        anct.updateField ("it_constantek", current_model.getAn().getKfactor(), false);
-        anct.updateField ("it_layervolume", current_model.getAn().getVolume_camada(), false);
-        anct.updateField ("it_caltemp", current_model.getAn().getCaltemp(), false);
         
         anct.updateAnaliseTime(current_model.getAn().getTimestamp());
         
@@ -379,43 +368,30 @@ public class FX1SMachine extends ActivityMachine {
         current_model.getAn().setUser(PicnoUtils.user_name);
         current_model.getAn().setProfile(current_model.getProfile().getArgument());
         
+        current_model.getAn().setAltura(current_model.getProfile().getDescriptor("it_altura").getDefault_value());
         current_model.getAn().setDensidade(current_model.getProfile().getDescriptor("it_densidade").getDefault_value());
-        current_model.getAn().setPorosidade(current_model.getProfile().getDescriptor("it_porosidade").getDefault_value());
-        //current_model.getAn().setMassa_ensaio(current_model.getProfile().getDescriptor("it_massa_calculada").getDefault_value());
+        current_model.getAn().setMassa_ensaio(current_model.getProfile().getDescriptor("it_massa").getDefault_value());
+        current_model.getAn().setTemperature(current_model.getProfile().getDescriptor("it_temperature").getDefault_value());
         
    
         current_model.getAn().getTempos().clear();
         current_model.getAn().setMedia("");
         current_model.getAn().setRsd("");
-        current_model.getAn().setBlaine("");
-        
+        current_model.getAn().setPoros("");
+        current_model.getAn().setPerm("");
+        current_model.getAn().setSSA("");
        
         current_model.getAn().setSid(current_model.getProfile().getDescriptor("it_sid").getDefault_value());
         current_model.getAn().setLote(current_model.getProfile().getDescriptor("it_lote").getDefault_value());
         current_model.getAn().setNotas(current_model.getProfile().getDescriptor("it_notas").getDefault_value());
 
-        
-        if (current_model.getCal() == null){
-            String calibid = current_model.getProfile().getDescriptor("it_calibfile").getDefault_value();
-            String ret = loadCalibration (calibid);
-        }
-        
-        //current_model.getAn().setCalibid(current_model.getProfile().getDescriptor("it_calibfile").getDefault_value());
-        current_model.getAn().setKfactor(current_model.getCal().getKfactor());
-        current_model.getAn().setVolume_camada(current_model.getCal().getVolume_camada());
-        current_model.getAn().setCaltemp(current_model.getCal().getTemperature());
-
-        ctrl.processSignal(new SMTraffic(0l, 0l, 0, "CALCMASS", this.getClass(),
-                        new VirnaPayload()
-        ));
-        
     }
     
     
-    @smstate (state = "NEWANALISE")
-    public boolean st_newAnalise(SMTraffic smm){
+    @smstate (state = "NEWANALISEYARA")
+    public boolean st_newAnaliseYara(SMTraffic smm){
         
-        log.info("New Analise called ...");
+        log.info("New Yara Analise called ...");
 
         loadAnaliseDefaults();
         updateAnaliseCanvas();
@@ -425,14 +401,14 @@ public class FX1SMachine extends ActivityMachine {
     }
     
     
-    @smstate (state = "ANALISEDONE")
-    public boolean st_analiseDone(SMTraffic smm){
+    @smstate (state = "ANALISEYARADONE")
+    public boolean st_analiseYaraDone(SMTraffic smm){
  
         PropertyLinkDescriptor pld = (PropertyLinkDescriptor)smm.getPayload().vobject;
         
         if (pld!= null){
             if (!pld.isValid()){
-                anct.updateField ("it_blaineresult", "", false);
+                anct.updateField ("it_ssa", "", false);
                 anct.setUIState("DONE_INVALID");
                 return true;
             }
@@ -500,8 +476,8 @@ public class FX1SMachine extends ActivityMachine {
     
     // ================================================= CALCULATION SERVICES =================================================================
   
-    @smstate (state = "UPDATEANTIME")
-    public boolean st_updateTime(SMTraffic smm){
+    @smstate (state = "UPDATEYARATIME")
+    public boolean st_updateYaraTime(SMTraffic smm){
         
         if (smm.getPayload().getFlag1()){
             Double average = (Double)smm.getPayload().vobject;
@@ -519,145 +495,240 @@ public class FX1SMachine extends ActivityMachine {
     }
     
     
-    @smstate (state = "CALCBLAINE")
-    public boolean st_calcBlaine(SMTraffic smm){
+    private void clearOutFields() {
         
+        anct.updateField ("it_poros", "", false);
+        anct.updateField ("it_perm", "", false);
+        anct.updateField ("it_ssa", "", false);
+    }
+    
+    
+    /// ========================================== CALCYARA =========================================================
+    
+    private LinkedHashMap<String,Argument> args = new LinkedHashMap<>();
+    private ArrayList<String> formulas = new ArrayList<>();
+    
+    private boolean createArgument (String line){
+        
+        String[] tokens = line.split("=");
+        if (tokens.length != 2) return false;
+        String argname = tokens[0].trim();
+        String form = tokens[1].trim();
+        
+        
+        Expression ex = new Expression (form);
+        //log.info(String.format("Eval ex [%s] : %s", argname, form));
+        for (String sarg : args.keySet()){
+            //log.info(String.format("\t looking if [%s] has : %s", argname, sarg));
+            if (form.contains(sarg)){
+                //log.info(String.format("\t\tFound %s on ex", sarg));
+                ex.addArguments(args.get(sarg));
+            }
+        }
+        
+        
+        Double d = ex.calculate();
+        if (d.isNaN()) {
+            String exerror = (ex.getErrorMessage().length() > 180) ? ex.getErrorMessage().substring(0, 180) : ex.getErrorMessage();
+            ctrl.processSignal(new SMTraffic(0l, 0l, 0, "ADD_NOTIFICATION", this.getClass(),
+                    new VirnaPayload().setString(
+                                "Servidor do nucleo de calculos&" + "SEVERE&" +
+                                String.format("Erro de sintaxe na formula que calcula o parametro : %s&", argname) +
+                                exerror
+            )));
+            
+            log.info(String.format("\t Failed to evaluate [%s] due %s", argname, exerror));
+            return false;
+        }
+//        else{
+//            log.info(String.format("\t----[%s] evaluated to %f", argname,  d));
+//        }
+        Argument arg = new Argument(argname, d);
+        
+        args.put(argname, arg);
+        
+        return true;
+    }
+    
+    private boolean checkArgument (String fieldname, String argid, String value){
+        
+        Double argvalue  = getDoublePValue(fieldname, value, true);
+        if (argvalue.isNaN()){
+            //clearOutFields();
+            return false;
+        }
+        else{
+            args.put(argid, new Argument(argid, argvalue));
+        }
+        return true;
+    }
+    
+    @smstate (state = "CALCYARA")
+    public boolean st_calcYara(SMTraffic smm){
+        
+        
+        args = new LinkedHashMap<>();
         
         Double viscosity = 1.349;
-        Double temperature = 22.0;
         
-        Double blaine;
-        
-        Double kfactor;
-        
-        Double porosity;
-        Double density;
+        Double alt;
+        Double dens;
+        Double temp = 22.0;
+        Double mass;
         
         Double time;
         Double rsd;
         
+        Argument densidade;
+        Argument altura;
+        
         
         PropertyLinkDescriptor pld = (PropertyLinkDescriptor)smm.getPayload().vobject;
-        
+      
         if (pld!= null){
             if (!pld.isValid()){
-                anct.updateField ("it_blaineresult", "", false);
+                clearOutFields();
                 return true;
             }
         }
         
-        porosity = getDoublePValue("porosidade", current_model.getAn().getPorosidade(), true);
-        if (porosity.isNaN()){
-            anct.updateField ("it_blaineresult", "", false);
+        
+        if (!checkArgument("altura", "altura", current_model.getAn().getAltura())){
+            clearOutFields();
+            return true;
+        }
+        if (!checkArgument("massa_ensaio", "peso", current_model.getAn().getMassa_ensaio())){
+            clearOutFields();
             return true;
         }
         
-        density  = getDoublePValue("densidade", current_model.getAn().getDensidade(), true);
-        if (density.isNaN()){
-            anct.updateField ("it_blaineresult", "", false);
+        FXFFieldDescriptor poros_fd = current_model.getProfile().getDescriptor("it_poros");
+        if (poros_fd == null || poros_fd.getFormulalist() == null || poros_fd.getFormulalist().isEmpty()) return true;
+        for (String form : poros_fd.getFormulalist()){
+            if (form.startsWith("#") || form.trim().isEmpty()) continue;
+            if (!createArgument(form)){
+                log.info("Formula Poros failed...");
+                return true;
+            }
+        }
+        Argument poros = args.get("poros");
+        if (poros != null){
+            anct.updateField ("it_poros", String.format("%5.3f",poros.getArgumentValue()), false);
+        }
+        
+        if (!checkArgument("media", "escoamento", current_model.getAn().getMedia())){
+            anct.updateField ("it_perm", "", false);
+            anct.updateField ("it_ssa", "", false);
             return true;
         }
-        
-        
-        time  = getDoublePValue("media", current_model.getAn().getMedia(), true);
-        if (time.isNaN()){
-            anct.updateField ("it_blaineresult", "", false);
-            return true;
+        FXFFieldDescriptor perm_fd = current_model.getProfile().getDescriptor("it_perm");
+        if (perm_fd == null || perm_fd.getFormulalist() == null || perm_fd.getFormulalist().isEmpty()) return true;
+        for (String form : perm_fd.getFormulalist()){
+            if (form.startsWith("#") || form.trim().isEmpty()) continue;
+            if (!createArgument(form)){
+                log.info("Formula Perm failed");
+                return true;
+            }
         }
-        
-        rsd  = getDoublePValue("rsd", current_model.getAn().getRsd(), true);
-        if (rsd.isNaN()){
-            anct.updateField ("it_blaineresult", "", false);
-            return true;
-        }
-        
-        kfactor  = getDoublePValue("kfactor", current_model.getAn().getKfactor(), true);
-        if (kfactor.isNaN()){
-            anct.updateField ("it_blaineresult", "", false);
-            return true;
-        }
-        
-        temperature  = getDoublePValue("temperature", current_model.getAn().getTemperature(), true);
-        if (kfactor.isNaN()){
-            anct.updateField ("it_blaineresult", "", false);
-            return true;
-        }
-        else{
-            viscosity = getVisco(temperature);
+        Argument perm = args.get("perm");
+        if (perm != null){
+            anct.updateField ("it_perm", String.format("%5.3f",perm.getArgumentValue()), false);
         }
         
         
-        Double top = Math.sqrt(porosity * porosity * porosity) * Math.sqrt(time) ;
-        Double bottom = (1 - porosity) * density * viscosity;
         
-        blaine = kfactor * (top / bottom);
         
-        String sblaine = String.format(Locale.US, "%5.3f", blaine);
-        log.info(String.format("Blaine was calculated and is  %s", sblaine));
-        log.info(String.format("\tequals -> sqrt(epsilon³) * sqrt(time average) -> %7.4f * %7.4f", Math.sqrt(porosity * porosity * porosity),  Math.sqrt(time)));
-        log.info(String.format("\tdivided by -> (1 - epsilon) * rho * visco -> %7.4f * %7.4f * %9.7f", (1 - porosity), density, viscosity/1000));
-        log.info(String.format("\ttimes -> kfactor -> %7.4f", kfactor));
+//        dens  = getDoublePValue("densidade", current_model.getAn().getDensidade(), true);
+//        if (dens.isNaN()){
+//            clearOutFields();
+//            return true;
+//        }
+//        else{
+//            args.put("densidade", new Argument("densidade", dens));
+//        }
+//
+//        
+//        temp  = getDoublePValue("temperature", current_model.getAn().getTemperature(), true);
+//        if (temp.isNaN()){
+//            clearOutFields();
+//            return true;
+//        }
+//        else{
+//            args.put("temperatura", new Argument("temperatura", temp));
+//        }
+// 
+////        mass  = getDoublePValue("massa_ensaio", current_model.getAn().getMassa_ensaio(), true);
+////        if (mass.isNaN()){
+////            clearOutFields();
+////            return true;
+////        }
+////        else{
+////            args.put("peso", new Argument("peso", mass));
+////        }
+// 
+//        
+//        time  = getDoublePValue("media", current_model.getAn().getMedia(), true);
+//        if (time.isNaN()){
+//            clearOutFields();
+//            return true;
+//        }
+//        else{
+//            args.put("escoamento", new Argument("escoamento", time));
+//        }
+//        
+//        rsd  = getDoublePValue("rsd", current_model.getAn().getRsd(), true);
+//        if (rsd.isNaN()){
+//            clearOutFields();
+//            return true;
+//        }
+//                
+//        log.info("Cal Yara has arguments ....");
+//        
+//        ArrayList<String> formulas = new ArrayList<>();
+//        formulas.add("#Formulas de calculo analise Yara");
+//        formulas.add("P2 = 0.999 -(0.099 * (peso/altura))");
+//        formulas.add("B = densidade * escoamento * P2^3");
+//        formulas.add("U = 0.000001752 * (temperatura+273.15) + 0.103434989/(temperatura+273.15) - 0.000687763");
+//        formulas.add("C = 0.89 * altura * (1-P2)*(1-P2) * U");
+//        formulas.add("F = B/C");
+//        formulas.add("perm = 87 * (altura/escoamento");
+//        formulas.add("poros = 0.999 -(0.099 * (peso/altura))");
+//        formulas.add("ssa = 59.661 + (7.52 * F^0.5)");
+//        
+//        
         
-        anct.updateField ("it_blaineresult", sblaine, false);
-        current_model.getAn().setBlaine(sblaine);
+        log.info(String.format("Yara calculated"));
+        
+        
+        
+        
+        
+        
+//        Double top = Math.sqrt(porosity * porosity * porosity) * Math.sqrt(time) ;
+//        Double bottom = (1 - porosity) * dens * viscosity;
+//        
+//        blaine = kfactor * (top / bottom);
+//        
+//        String sblaine = String.format(Locale.US, "%5.3f", blaine);
+//        log.info(String.format("Blaine was calculated and is  %s", sblaine));
+//        log.info(String.format("\tequals -> sqrt(epsilon³) * sqrt(time average) -> %7.4f * %7.4f", Math.sqrt(porosity * porosity * porosity),  Math.sqrt(time)));
+//        log.info(String.format("\tdivided by -> (1 - epsilon) * rho * visco -> %7.4f * %7.4f * %9.7f", (1 - porosity), dens, viscosity/1000));
+//        log.info(String.format("\ttimes -> kfactor -> %7.4f", kfactor));
+//        
+//        anct.updateField ("it_blaineresult", sblaine, false);
+//        current_model.getAn().setBlaine(sblaine);
+//        
         
         return true;
         
     }
     
     
-    @smstate (state = "CALCMASS")
-    public boolean st_calcMass(SMTraffic smm){
-        
-        Double porosity;
-        Double density;
-        Double layervol;
-        Double samplemass;
-        
-        PropertyLinkDescriptor pld = (PropertyLinkDescriptor)smm.getPayload().vobject;
-        
-        if (pld!= null){
-            if (!pld.isValid()){
-                anct.updateField ("it_massa_calculada", "", false);
-                return true;
-            }
-        }
-        
-        porosity = getDoublePValue("porosidade", current_model.getAn().getPorosidade(), true);
-        if (porosity.isNaN()){
-            anct.updateField ("it_massa_calculada", "", false);
-            return true;
-        }
-        
-        density  = getDoublePValue("densidade", current_model.getAn().getDensidade(), true);
-        if (density.isNaN()){
-            anct.updateField ("it_massa_calculada", "", false);
-            return true;
-        }
-        
-        layervol  = getDoublePValue("volume_camada", current_model.getAn().getVolume_camada(), true);
-        if (layervol.isNaN()){
-            anct.updateField ("it_massa_calculada", "", false);
-            return true;
-        }
-        
-        samplemass = (1 - porosity) * (density * layervol);
-        
-        
-        String smass = String.format(Locale.US, "%5.3f", samplemass);
-        log.info(String.format("Samplemass was calculated : %s", smass));
-        anct.updateField ("it_massa_calculada", smass, false);
-    
-        
-        return true;
-    }
-    
-  
     // ====================================== ANALYSIS UPDATE ==============================================================
     
     public void storeAnaliseAction(){
             
-        ctrl.processSignal(new SMTraffic(0l, 0l, 0, "STOREANALISEFILE", this.getClass(),
+        ctrl.processSignal(new SMTraffic(0l, 0l, 0, "STOREANALISEYARAFILE", this.getClass(),
                                     new VirnaPayload()                         
         )); 
     }
@@ -695,13 +766,13 @@ public class FX1SMachine extends ActivityMachine {
     
     private File getAnablFile(Long timestamp){
        
-        String filename = String.format("anabl-%1$td%1$tm%1$ty%1$tH%1$tM%1$tS.json", timestamp);
+        String filename = String.format("anayara-%1$td%1$tm%1$ty%1$tH%1$tM%1$tS.json", timestamp);
         Path p = Paths.get(Config.getInstance().getExport_dir()+filename);
         return p.toFile();
     }
     
-    @smstate (state = "STOREANALISEFILE")
-    public boolean st_storeAnaliseFile(SMTraffic smm){
+    @smstate (state = "STOREANALISEYARAFILE")
+    public boolean st_storeAnaliseYaraFile(SMTraffic smm){
         
 //        String filename = String.format("anabl-%1$td%1$tm%1$ty%1$tH%1$tM%1$tS.json", current_model.getAn().getUid());
 //        Path p = Paths.get(Config.getInstance().getExport_dir()+filename);
@@ -753,10 +824,10 @@ public class FX1SMachine extends ActivityMachine {
                                                     "Pode ter havido edição de resultados, sua flag de 'editado' foi marcada"        
                                     )));
                                 }
-                                ctrl.processSignal(new SMTraffic(0l, 0l, 0, "STOREANALISERECORD", this.getClass(),
+                                ctrl.processSignal(new SMTraffic(0l, 0l, 0, "STOREANALISEYARARECORD", this.getClass(),
                                                         new VirnaPayload()
                                                         .setObject(current_model.getAn())
-                                                        .setCaller(FX1SMachine.instance)
+                                                        .setCaller(FX5SMachine.instance)
                                                         .setCallerstate("CHECKRECORD")
                                 ));
                             }
@@ -767,10 +838,10 @@ public class FX1SMachine extends ActivityMachine {
         }
         else{
             if (storeAnaliseFile(f.toPath())){
-                ctrl.processSignal(new SMTraffic(0l, 0l, 0, "STOREANALISERECORD", this.getClass(),
+                ctrl.processSignal(new SMTraffic(0l, 0l, 0, "STOREANALISEYARARECORD", this.getClass(),
                                         new VirnaPayload()
                                         .setObject(current_model.getAn())
-                                        .setCaller(FX1SMachine.instance)
+                                        .setCaller(FX5SMachine.instance)
                                         .setCallerstate("CHECKRECORD")
                 ));
             }
@@ -780,22 +851,22 @@ public class FX1SMachine extends ActivityMachine {
     }
  
     
-    @smstate (state = "STOREANALISERECORD")
-    public boolean st_storeAnaliseRecord(SMTraffic smm){
+    @smstate (state = "STOREANALISEYARARECORD")
+    public boolean st_storeAnaliseYaraRecord(SMTraffic smm){
         
         AnaliseDescriptor and;
         VirnaPayload payload = smm.getPayload();
        
         Object caller = payload.getCaller();
         
-        if (caller instanceof FX1SMachine){           
-            if (payload.getCallerstate().equals("CHECKRECORD")){
+        if (caller instanceof FX5SMachine){           
+            if (payload.getCallerstate().equals("CHECKYARARECORD")){
                 dbservice.processSignal(new SMTraffic(0l, 0l, 0, "HASRECORD", FX1Controller.class,
                                         new VirnaPayload()
                                         .setLong1(current_model.getAn().getUid())
                                         .setObject(current_model.getAn())
                                         .setCaller(ctrl)
-                                        .setCallerstate("STOREANALISERECORD")
+                                        .setCallerstate("STOREANALISEYARARECORD")
                 ));
             }
  
@@ -884,7 +955,7 @@ public class FX1SMachine extends ActivityMachine {
     // ===================================================  LOAD ANALYSIS SERVICES ============================================
     
     public void loadFileAction(){
-        ctrl.processSignal(new SMTraffic(0l, 0l, 0, "LOADFILE", this.getClass(),
+        ctrl.processSignal(new SMTraffic(0l, 0l, 0, "LOADYARAFILE", this.getClass(),
                                 new VirnaPayload()
                                 .setObject(current_model.getAn())
                                 .setCaller(ctrl)
@@ -903,7 +974,7 @@ public class FX1SMachine extends ActivityMachine {
             GsonBuilder builder = new GsonBuilder(); 
             builder.setPrettyPrinting(); 
             Gson gson = builder.create();
-            AnaliseDescriptor adesc = gson.fromJson(json_out, AnaliseDescriptor.class);
+            YaraDescriptor adesc = gson.fromJson(json_out, YaraDescriptor.class);
             current_model.setAn(adesc);
             
             log.info(String.format("Analise loaded from %s", p.toFile().getAbsolutePath()));
@@ -925,11 +996,11 @@ public class FX1SMachine extends ActivityMachine {
     }
     
     
-    @smstate (state = "LOADFILE")
-    public boolean st_loadFile(SMTraffic smm){
+    @smstate (state = "LOADYARAFILE")
+    public boolean st_loadYaraFile(SMTraffic smm){
         
         String file = "";
-        AnaliseDescriptor and;
+        YaraDescriptor and;
         VirnaPayload payload = smm.getPayload();
         Object caller = payload.getCaller();
        
@@ -943,7 +1014,7 @@ public class FX1SMachine extends ActivityMachine {
                 SimpleStringProperty result = hb.showListDialog("Escolha o arquivo a carregar", 
                     new FXFListDialogBuilder()
                             .enableButton("cancel", "Cancelar", "cancel", true)
-                            .addFiles("/home/acp/PP200/Export", "formated_time", "anabl-")
+                            .addFiles("/home/acp/PP200/Export", "formated_time", "anayara-")
                 );
 
                 if (result != null){
@@ -1029,14 +1100,8 @@ public class FX1SMachine extends ActivityMachine {
     // ============================================== REPORT SERVICES ================================================
     
        public void reportAnalise(){
-//        smqueue.offer(new SMTraffic(0l, 0l, 0, "LOADREPORTDESCRIPTOR", 
-//                                new VirnaPayload()
-//                                .setObject(an)
-//                                .setCaller(this)
-//                                .setCallerstate("")
-//        )); 
         
-        ctrl.processSignal(new SMTraffic(0l, 0l, 0, "REPORTANALISE", this.getClass(),
+        ctrl.processSignal(new SMTraffic(0l, 0l, 0, "REPORTANALISEYARA", this.getClass(),
                                 new VirnaPayload()
                                 .setObject(current_model.getAn())
                                 .setCaller(ctrl)
@@ -1146,8 +1211,8 @@ public class FX1SMachine extends ActivityMachine {
     }
     
     
-    @smstate (state = "REPORTANALISE")
-    public boolean st_reportAnalise(SMTraffic smm){
+    @smstate (state = "REPORTANALISEYARA")
+    public boolean st_reportAnaliseYara(SMTraffic smm){
         
         //String filename;
         String fullpath;
@@ -1160,7 +1225,7 @@ public class FX1SMachine extends ActivityMachine {
             if (payload.getCallerstate().equals("")){
                 
                 //filename = String.format("anabl-%1$td%1$tm%1$ty%1$tH%1$tM%1$tS.pdf", current_model.getAn().getUid());
-                fullpath = String.format("%1$sanabl-%2$td%2$tm%2$ty%2$tH%2$tM%2$tS.pdf", 
+                fullpath = String.format("%1$sanayara-%2$td%2$tm%2$ty%2$tH%2$tM%2$tS.pdf", 
                                 Config.getInstance().getReport_dir(), current_model.getAn().getUid());
                 Path p = Paths.get(fullpath);
                 File f = p.toFile();
@@ -1196,9 +1261,9 @@ public class FX1SMachine extends ActivityMachine {
                                             Long nuid = System.currentTimeMillis();
                                             current_model.getAn().setUid(nuid);
                                             current_model.getAn().setTimestamp(nuid);
-                                            String fullpath = String.format("%1$sanabl-%2$td%2$tm%2$ty%2$tH%2$tM%2$tS.pdf", 
+                                            String fullpath = String.format("%1$sanayara-%2$td%2$tm%2$ty%2$tH%2$tM%2$tS.pdf", 
                                                 Config.getInstance().getReport_dir(), current_model.getAn().getUid());
-                                            if (emitReport(fullpath, "anabl")){
+                                            if (emitReport(fullpath, "yara")){
                                                 ctrl.processSignal(new SMTraffic(0l, 0l, 0, "UPDATESTATUS", this.getClass(),
                                                         new VirnaPayload().setObject(
                                                         new StatusMessage(String.format("Relatorio %s foi exportado.", 
@@ -1210,7 +1275,7 @@ public class FX1SMachine extends ActivityMachine {
                                             return;
                                         }
                                         else{
-                                            if (!emitReport(fullpath, "pdf1")) return;
+                                            if (!emitReport(fullpath, "yara")) return;
                                             ctrl.processSignal(new SMTraffic(0l, 0l, 0, "ADD_NOTIFICATION", this.getClass(),
                                                 new VirnaPayload().setString(
                                                             "Gerente de Administração&" + "INFO&" +

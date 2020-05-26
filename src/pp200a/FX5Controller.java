@@ -5,64 +5,53 @@
  */
 package pp200a;
 
+
 import com.opus.fxsupport.BlaineDevice;
+import com.opus.fxsupport.SystemMenu;
 import com.opus.fxsupport.DateWidget;
+import com.opus.fxsupport.PropertyLinkDescriptor;
+import com.opus.fxsupport.FXFField;
+import com.opus.fxsupport.FXFFieldDescriptor;
+import com.opus.fxsupport.FXFTextField;
+import com.opus.fxsupport.NumberValidator;
 import com.opus.fxsupport.EmptyValidator;
 import com.opus.fxsupport.FXFBlaineDeviceController;
 import com.opus.fxsupport.FXFCheckListViewNumber;
 import com.opus.fxsupport.FXFController;
 import com.opus.fxsupport.FXFCountdownTimer;
-import com.opus.fxsupport.FXFField;
-import com.opus.fxsupport.FXFFieldDescriptor;
-import com.opus.fxsupport.FXFTextField;
-import com.opus.fxsupport.FXFValidator;
-import com.opus.fxsupport.FXFWidgetManager;
 import com.opus.fxsupport.LauncherItem;
-import com.opus.fxsupport.NumberValidator;
-import com.opus.fxsupport.PropertyLinkDescriptor;
-import com.opus.fxsupport.SystemMenu;
-import com.opus.fxsupport.VoidValidator;
 import com.opus.fxsupport.WidgetDescriptor;
+import com.opus.fxsupport.VoidValidator;
 import com.opus.glyphs.FontAwesomeIcon;
 import com.opus.glyphs.GlyphsBuilder;
+import com.opus.syssupport.FormulaResources;
 import com.opus.syssupport.PicnoUtils;
-import com.opus.syssupport.Profile;
 import com.opus.syssupport.SMTraffic;
 import com.opus.syssupport.VirnaPayload;
 import com.opus.syssupport.VirnaServiceProvider;
-import java.io.IOException;
+
+
+import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.ResourceBundle;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
-import org.controlsfx.control.CheckListView;
-import org.controlsfx.control.textfield.TextFields;
-import org.controlsfx.glyphfont.FontAwesome;
-import org.controlsfx.glyphfont.Glyph;
+
+
 import org.controlsfx.validation.Severity;
 import org.controlsfx.validation.ValidationResult;
 import org.controlsfx.validation.ValidationSupport;
@@ -70,23 +59,21 @@ import org.controlsfx.validation.Validator;
 
 
 
+public class FX5Controller extends FXFController implements com.opus.fxsupport.FXFControllerInterface {
 
-public class FX2Controller extends FXFController implements com.opus.fxsupport.FXFControllerInterface {
-
-    private static final Logger LOG = Logger.getLogger(FX2Controller.class.getName());
+    private static final Logger LOG = Logger.getLogger(FX5Controller.class.getName());
     
-   
     private String profilepath;
-    private ProfileCal profile;
+    private ProfileYara profile;
     
     private Controller appctrl = Controller.getInstance();
-    private FX2SMachine machine;
-    private FX2Model model;
+    private FX5SMachine machine;
+    private FX5Model model;
     
     
     @FXML
     private Label lb_profile;
-    
+
     @FXML
     private Label sidebar_btcycle;
 
@@ -95,27 +82,19 @@ public class FX2Controller extends FXFController implements com.opus.fxsupport.F
 
     @FXML
     private Label sidebar_btreport;
-    
-    @FXML
-    private Label sidebar_btloadfile;
-    
-    
 
     @FXML
-    private FXFTextField it_porosidade;
+    private Label sidebar_btloadfile;
+
+    @FXML
+    private FXFTextField it_altura;
 
     @FXML
     private FXFTextField it_densidade;
 
     @FXML
-    private FXFTextField it_volume;
+    private FXFTextField it_poros;
 
-    @FXML
-    private FXFTextField it_kfactor;
-
-
-    @FXML
-    private FXFTextField it_analisetime;
     
     @FXML
     private FXFTextField it_analiseaverage;
@@ -130,35 +109,38 @@ public class FX2Controller extends FXFController implements com.opus.fxsupport.F
     private FXFTextField it_notas;
 
     @FXML
-    private FXFTextField it_filtro;
+    private FXFTextField it_lote;
 
     @FXML
-    private FXFTextField it_mass;
-
-    
-    @FXML
-    private FXFTextField it_area;
+    private FXFTextField it_peso;
 
     @FXML
     private FXFTextField it_temperature;
 
     @FXML
     private DateWidget date;
-   
+
     @FXML
     private FXFBlaineDeviceController blainedevice;
 
+    @FXML
+    private FXFTextField it_ssa;
 
+    @FXML
+    private FXFTextField it_perm;
     
-    public FX2Controller(FXMLLoader fxmlLoader) {
+    
+    
+    public FX5Controller(FXMLLoader fxmlLoader) {
         this.fxmlLoader = fxmlLoader; 
     }
     
     
-    public FX2Controller(FXMLLoader fxmlLoader, String profilepath) {
+    public FX5Controller(FXMLLoader fxmlLoader, String profilepath) {
         this.fxmlLoader = fxmlLoader; 
         this.profilepath = profilepath;
     }
+    
     
     // Application controller link 
     private VirnaServiceProvider ctrl;
@@ -178,17 +160,16 @@ public class FX2Controller extends FXFController implements com.opus.fxsupport.F
     }
     
     
-    
-    
     @FXML
     void initialize() {
         
-        LOG.info(String.format("FX1Controller initializing with profile : %s", profilepath));
-        profile = PicnoUtils.profile_resources.getProfile(profilepath, ProfileCal.class);
-        profileid = profile.getArgument();
-        machine = FX2SMachine.getInstance();
         
-        model = new FX2Model();
+        LOG.info(String.format("FX5Controller initializing with profile : %s", profilepath));
+        profile = PicnoUtils.profile_resources.getProfile(profilepath, ProfileYara.class);
+        profileid = profile.getArgument();
+        machine = FX5SMachine.getInstance();
+        
+        model = new FX5Model();
         model.setProfile(profile);
         model.setMachine(machine);
         model.setAppCtrl(appctrl);
@@ -197,19 +178,17 @@ public class FX2Controller extends FXFController implements com.opus.fxsupport.F
             
         machine.setAppController(appctrl);
         machine.addModel(profile.getArgument(), model);
-        machine.mapProperties(profile.getArgument(), model.getCal());
+        machine.mapProperties(profile.getArgument(), model.getAn());
         machine.activateModel(profile.getArgument());
         
         blainedevice.setAppController(appctrl);
         
         addContext(fxmlLoader.getNamespace());
         
-        //machine.newCalibration();
+        //machine.newAnalise();
  
-      
     }
-   
-       
+    
     @Override
     public void setLauncher(LauncherItem li){
         profile.setLauncher(li);
@@ -242,7 +221,8 @@ public class FX2Controller extends FXFController implements com.opus.fxsupport.F
         blainedevice.initAnalises();
     }
     
-     // =============================================== MENU SERVICES =======================================================
+    
+    // =============================================== MENU SERVICES =======================================================
     
     private void drawSystemMenuSeparator(SystemMenu menupane, Double ypos){
         Line sep = new Line();
@@ -271,7 +251,7 @@ public class FX2Controller extends FXFController implements com.opus.fxsupport.F
         bt_clone.setOnMouseClicked(new EventHandler<MouseEvent>(){
             @Override 
             public void handle(MouseEvent event) {
-                    appctrl.processSignal(new SMTraffic(0l, 0l, 0, "CLONEPROFILE", this.getClass(),
+                    appctrl.processSignal(new SMTraffic(0l, 0l, 0, "CLONEYARAPROFILE", this.getClass(),
                                    new VirnaPayload().setFlag1(true)
                     ));
             } 
@@ -291,7 +271,7 @@ public class FX2Controller extends FXFController implements com.opus.fxsupport.F
         bt_delete.setOnMouseClicked(new EventHandler<MouseEvent>(){
             @Override 
             public void handle(MouseEvent event) {
-                appctrl.processSignal(new SMTraffic(0l, 0l, 0, "DELETEPROFILE", this.getClass(),
+                appctrl.processSignal(new SMTraffic(0l, 0l, 0, "DELETEYARAPROFILE", this.getClass(),
                                    new VirnaPayload().setFlag1(true)
                     ));
             } 
@@ -308,6 +288,16 @@ public class FX2Controller extends FXFController implements com.opus.fxsupport.F
     
     
     // =========================================================
+    
+    public void updateAnaliseTime (long timestamp) {
+        
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                date.updateValue(String.valueOf(timestamp), true);
+            }
+        });
+    }
     
     
     @Override
@@ -330,7 +320,7 @@ public class FX2Controller extends FXFController implements com.opus.fxsupport.F
                     field.setManagement(this, focus, wctx);
                     wctx.getWidgetList().put(focus, wd);
                     
-                    LOG.info(String.format("FX1 registering Key: %s of type=%s", name, obj.toString()));
+                    LOG.info(String.format("FX5 registering Key: %s of type=%s", name, obj.toString()));
                 }
            }
         });
@@ -491,7 +481,10 @@ public class FX2Controller extends FXFController implements com.opus.fxsupport.F
         initValidators(field, fxfd);
 
         FXFController.updateAutocomplete(fxfd, null);
-
+        
+        FXFController.updateFormulas(fxfd, null);
+        
+        
         String localcallback = fxfd.getLocal_callback();
         if (!localcallback.equals("")){
             PropertyLinkDescriptor linkdesc;
@@ -516,7 +509,6 @@ public class FX2Controller extends FXFController implements com.opus.fxsupport.F
     }
     
     
-    
     @Override
     public void sendSignal (PropertyLinkDescriptor pld, String sigtype){
         
@@ -539,7 +531,7 @@ public class FX2Controller extends FXFController implements com.opus.fxsupport.F
         vs = new ValidationSupport(); 
         validators = new LinkedHashMap<>();
         
-        appctrl.setFXCALController(this);
+        appctrl.setFXYARAController(this);
 //        appctrl.loadLastCalibration();
 
         lb_profile.setText(profile.getLabel());
@@ -569,25 +561,18 @@ public class FX2Controller extends FXFController implements com.opus.fxsupport.F
             }
         }
  
+        FormulaResources fr = FormulaResources.getInstance();
+        fr.setProfile(profile);
+        fr.updateFormulas();
+        
+        
         sidebar_btcycle.setGraphic(GlyphsBuilder.getAwesomeGlyph(FontAwesomeIcon.REFRESH, "black", 4));
         sidebar_btstore.setGraphic(GlyphsBuilder.getAwesomeGlyph(FontAwesomeIcon.DATABASE, "black", 4));
         sidebar_btreport.setGraphic(GlyphsBuilder.getAwesomeGlyph(FontAwesomeIcon.FILE_PDF_ALT, "black", 4));
-       
+        //sidebar_btbroadcast.setGraphic(GlyphsBuilder.getAwesomeGlyph(FontAwesomeIcon.SHARE_ALT, "black", 4));
         sidebar_btloadfile.setGraphic(GlyphsBuilder.getAwesomeGlyph(FontAwesomeIcon.ARCHIVE, "black", 4));
              
     }
-    
-    public void updateAnaliseTime (long timestamp) {
-        
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                date.updateValue(String.valueOf(timestamp), true);
-            }
-        });
-    }
-    
-    
     
     public void setUIState(String verb){
         
@@ -598,42 +583,48 @@ public class FX2Controller extends FXFController implements com.opus.fxsupport.F
                 sidebar_btcycle.setDisable(false);
                 sidebar_btstore.setDisable(true);
                 sidebar_btreport.setDisable(true);
-                
+                //sidebar_btbroadcast.setDisable(true);
+                sidebar_btloadfile.setDisable(false);
                 blainedevice.enableRun(true);
                 break;
             case "LOADED":
                 sidebar_btcycle.setDisable(false);
                 sidebar_btstore.setDisable(true);
                 sidebar_btreport.setDisable(false);
-                
+                //sidebar_btbroadcast.setDisable(false);
+                sidebar_btloadfile.setDisable(true);
                 blainedevice.enableRun(false);
                 break;    
             case "RUNNING":
                 sidebar_btcycle.setDisable(true);
                 sidebar_btstore.setDisable(true);
                 sidebar_btreport.setDisable(true);
-                
+                //sidebar_btbroadcast.setDisable(true);
+                sidebar_btloadfile.setDisable(true);
                 blainedevice.enableRun(true);
                 break;
             case "DONE_VALID":
                 sidebar_btcycle.setDisable(false);
                 sidebar_btstore.setDisable(false);
                 sidebar_btreport.setDisable(false);
-                
+                //sidebar_btbroadcast.setDisable(false);
+                sidebar_btloadfile.setDisable(true);
                 blainedevice.enableRun(false);
                 break;
             case "DONE_INVALID":
                 sidebar_btcycle.setDisable(false);
                 sidebar_btstore.setDisable(true);
                 sidebar_btreport.setDisable(true);
-                
+                //sidebar_btbroadcast.setDisable(true);
+                sidebar_btloadfile.setDisable(true);
                 blainedevice.enableRun(true);
                 break;    
             default:
                 sidebar_btcycle.setDisable(false);
                 sidebar_btstore.setDisable(true);
                 sidebar_btreport.setDisable(true);
-                
+                //sidebar_btbroadcast.setDisable(true);
+                sidebar_btloadfile.setDisable(false);
                 blainedevice.enableRun(true);
                 break;
         }
@@ -642,32 +633,26 @@ public class FX2Controller extends FXFController implements com.opus.fxsupport.F
     
     
     
-    
-    
     // ========================================= DISPATCH SECTION =======================================================
-    
-    
-    @FXML
-    void canvas_clicked(MouseEvent event) {
-        //LOG.info("Canvas clicked ...");
-        //clearCanvas();
-    }
-    
     
     @FXML
     void btcycle_action(MouseEvent event) {
-        machine.newCalibration();
+        machine.newAnalise();
     }
 
-    
+//    @FXML
+//    void btexport_action(MouseEvent event) {
+//        LOG.info("BT export clicked ...");
+//    }
+
     @FXML
     void btreport_action(MouseEvent event) {
-        machine.reportCalibration();
+        machine.reportAnalise();
     }
 
     @FXML
     void btstore_action(MouseEvent event) {
-        machine.storeCalibrationAction();
+        machine.storeAnaliseAction();
     }
     
     @FXML
@@ -675,22 +660,40 @@ public class FX2Controller extends FXFController implements com.opus.fxsupport.F
         machine.loadFileAction();
     }
     
+    @FXML
+    void btrun_action(MouseEvent event) {
+        //Random rand = new Random();
+        //addTimeEntry (String.format(Locale.US, "%5.2f", 125.0 + (rand.nextDouble()-0.5)*2));
+        //checklist1.addEntry(160 + ((rand.nextDouble()-0.5)*2), "Normal");
+        appctrl.processSignal(new SMTraffic(0l, 0l, 0, "INITYARARUNS", this.getClass(),
+                                   new VirnaPayload()));
+    }
+    
+   
     @Override
-    public void clearCanvas(){
-        
+    public void clearCanvas(){ 
+//        pnl_user.setVisible(false);
+//        checklist1.setOpacity(0.0);
+    }
+    
+    @FXML
+    void canvas_clicked(MouseEvent event) {
+        //LOG.info("Canvas clicked ...");
+        clearCanvas();
     }
     
     
-//    public void yieldFocus(FXFField field, boolean fwd){
-//        wdgmanager.yieldFocus(this, field, fwd);
-//    }
-    
-    
-   public Scene getScene() { return getScene();}
+    @FXML
+    void user_action(MouseEvent event) {
 
-    private static final String UID = "FX2";
+    }
+  
+    public Scene getScene() { return getScene();}
+
+    private static final String UID = "FX5";
     @Override
     public String getUID() { return UID;}
+
     
 }
 
@@ -704,23 +707,6 @@ public class FX2Controller extends FXFController implements com.opus.fxsupport.F
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-       
-        
-        
 //        FX001_campo1.setTooltip(new Tooltip("Mensagem de teste numero 2"));
 //        validators.put(FX001_campo1, new NumberValidator()
 //                .setRangeWindows(10.0, 10.0, 15.0)
@@ -768,3 +754,111 @@ public class FX2Controller extends FXFController implements com.opus.fxsupport.F
         
         //Glyph glyph = new Glyph("FontAwesome", FontAwesome.Glyph.REFRESH);
         //Glyph graphic = Glyph.create( "FontAwesome|" + glyph.getText()).sizeFactor(5).color(Color.LIGHTBLUE).useGradientEffect();
+
+
+//final ObservableList<String> calibs = FXCollections.observableArrayList();
+//        for (int i = 0; i <= 15; i++) {
+//            calibs.add("Padrão HF-207 calib:" + i);
+//        }
+//        
+//        cb_calibration.setItems(calibs);
+//        cb_calibration.setValue("Escolha uma calibração");
+
+
+               
+                
+//                System.out.println("============================================");
+//                System.out.println("Change: " + change);
+//                System.out.println("Added sublist " + change.getAddedSubList());
+//                System.out.println("Removed sublist " + change.getRemoved());
+//                System.out.println("From " + change.getFrom());
+//                System.out.println("To " + change.getTo());
+//                System.out.println("Next " + change.next());
+//                System.out.println("Added Size " + change.getAddedSize());
+//                System.out.println("Removed Size " + change.getRemovedSize());
+//                System.out.println("List " + change.getList());
+//                System.out.println("Added " + change.wasAdded() + " Permutated " + change.wasPermutated() + " Removed " + change.wasRemoved() + " Replaced "
+//                        + change.wasReplaced() + " Updated " + change.wasUpdated());
+//                System.out.println("============================================");
+                
+                
+                
+        
+//        TextInputControl tic = (TextInputControl)field;
+//        sp_tic.addListener((ObservableValue<? extends String> ov, String oldVal, String newVal) -> {
+//            LOG.info(String.format("Field @ %d changed to %s", tic.hashCode(),  newVal));
+//        });
+        
+       
+
+    
+    
+//    public void loadProfile(){
+//        
+//        profile = appctrl.getProfile();
+//        lb_profile.setText(profile.getLabel());
+//        
+//    }
+//    
+//    public Profile getProfile() { return profile;}
+//    
+//    
+//    public void updateUserPanel(){
+//        
+//        cb_profile.setItems(FXCollections.observableArrayList(appctrl.getProfile_list()));
+//        cb_profile.setValue(profile.getLabel());
+////        if (PicnoUtils.user.isMay_changeprofile()){
+////            cb_profile.setDisable(false);
+////        }
+////        else{
+////            cb_profile.setDisable(true);
+////        }
+//        lb_avatar.setText("User");
+//        String log1 = String.format(PicnoUtils.timestamp_format, appctrl.getLogTime());
+//        lb_logged.setText(log1);
+//        
+//        String savatar = "";
+//        if (!savatar.isEmpty()){
+//            File file = new File(Config.getInstance().getAux_dir()+savatar);
+//            Image image = new Image(file.toURI().toString());
+//            avatar.setImage(image);          
+//            ImageView iv = new ImageView(image);
+//            iv.setFitHeight(50);
+//            iv.setFitWidth(50);
+//            lb_user.setGraphic(iv);
+//        }
+//        else{
+//            lb_user.setGraphic(Glyph.create( "FontAwesome|" + new Glyph("FontAwesome", FontAwesome.Glyph.USER).getText())
+//                .sizeFactor(3).color(Color.WHITE)
+//            );
+//        }
+//    }
+//    
+
+
+
+        
+//        sidebar_btcycle.setGraphic(Glyph.create( "FontAwesome|" + new Glyph("FontAwesome", FontAwesome.Glyph.REFRESH).getText())
+//                .sizeFactor(5).color(Color.LIGHTBLUE)
+//                .useGradientEffect()
+//        );
+
+
+
+//
+//        // Create the CheckListView with the data 
+////        checklist1.setItems(strings);
+//        //initTimeList();
+//        
+//        Random rand = new Random();
+//        for (int i = 0; i <= 10; i++) {
+//            time_entries.add(String.format("%5.2f", 125.0 + (rand.nextDouble()-0.5)*2));
+//        }
+//        
+////        Platform.runLater(new Runnable() {
+////            @Override
+////            public void run() {
+//                checklist1.setItems(time_entries);
+////            }
+////        });
+////        
