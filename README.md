@@ -1,2 +1,2 @@
 # PP200
-JavaFX  - Work Canvas / Window Manager &amp; Sample Application (Github test)
+JavaFX  - Stand Alone S.O. / Work Canvas / Window Manager & Analysis Instrument Platform (Github demo version)
